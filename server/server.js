@@ -14,13 +14,17 @@ io.on("connection", function (socket) {
     io.emit("isPlayerA");
   }
 
+<<<<<<< HEAD
   io.emit("playerID", players.length);
 
+=======
+>>>>>>> 6a47bec17c3fc7b91699fa39654a00db49761325
   // socket.on("user", function (name) {
   //   console.log(" user connected: " + socket.id + " name : " + name);
   //   // users.push({ id: socket.id, name: name });
   // });
 
+<<<<<<< HEAD
   socket.on("dealCards", function (round) {
     var deck = new Deck();
     var hands = deck.giveHands(players.length, round);
@@ -32,6 +36,15 @@ io.on("connection", function (socket) {
 
   socket.on("cardPlayed", function (gameObject, isPlayerA) {
     socket.broadcast.emit("cardPlayed", gameObject, isPlayerA);
+=======
+
+  socket.on("dealCards", function () {
+    io.emit("dealCards");
+  });
+
+  socket.on("cardPlayed", function (gameObject, isPlayerA) {
+    io.emit("cardPlayed", gameObject, isPlayerA);
+>>>>>>> 6a47bec17c3fc7b91699fa39654a00db49761325
   });
 
   socket.on("disconnect", function () {

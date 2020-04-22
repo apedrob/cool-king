@@ -1,4 +1,3 @@
-import generator from "./TerrainGen";
 
 const INITIAL_STATE = {
   map: null,
@@ -23,16 +22,11 @@ const game = () => {
     state = { ...state, players: [...players, player] };
   };
 
-  const generateMap = (width, height, seed = Math.random) => {
-    const map = generator(width, height);
-    state = { ...state, map };
-  };
 
   return {
     loadMap,
     saveMap,
     addPlayer,
-    generateMap
   };
 };
 

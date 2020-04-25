@@ -11,6 +11,7 @@ const Socket = scene => {
 
   socket.on("newPlayer", players => {
     scene.players = players;
+    console.log(players);
 
     scene.playersText.setText("...");
     scene.playersText.setText(`Number of Players: ${players}`);

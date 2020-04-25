@@ -1,13 +1,17 @@
-const Deck = require("./helpers/deck");
-
-const server = require("express")();
+const express = require("express");
+const cors = require("cors");
+const server = express();
 const http = require("http").createServer(server);
 const io = require("socket.io")(http);
+
+const Deck = require("./helpers/deck");
+
+server.use(cors({ credentials: true, origin: true }));
 
 let players = [];
 let round = 0;
 
-io.on("connection", function (socket) {
+io.on("connection", function(socket) {
   players.push(socket.id);
 
   if (players.length === 1) {
@@ -42,12 +46,12 @@ io.on("connection", function (socket) {
     );
   });
 
-  socket.on("cardPlayed", function (gameObject, playerID) {
+  socket.on("cardPlayed", function(gameObject, playerID) {
     socket.broadcast.emit("cardPlayed", gameObject, playerID);
     // socket.broadcast.emit("freeze", gameObject, isPlayerA);
   });
 
-  socket.on("endHand", function (boardCards, order) {
+  socket.on("endHand", function(boardCards, order) {
     // setTimeout(() => {
     io.emit("endHand");
 
@@ -60,13 +64,13 @@ io.on("connection", function (socket) {
     // socket.broadcast.emit("freeze", gameObject, isPlayerA);
   });
 
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function() {
     console.log("A user disconnected: " + socket.id);
-    players = players.filter((player) => player !== socket.id);
+    players = players.filter(player => player !== socket.id);
     io.emit("newPlayer", players.length);
   });
 });
 
-http.listen(3000, function () {
+http.listen(3000, function() {
   console.log("Server started!");
 });

@@ -2,14 +2,14 @@ import io from "socket.io-client";
 
 import Card from "../helpers/Card";
 
-const Socket = (scene) => {
-  const socket = io(process.env.SERVER_URL);
+const Socket = scene => {
+  const socket = io(process.env.SERVER_URL, { transport: ["websocket"] });
   console.log(process.env.SERVER_URL);
-  socket.on("connect", function () {
+  socket.on("connect", function() {
     console.log("Connected");
   });
 
-  socket.on("newPlayer", (players) => {
+  socket.on("newPlayer", players => {
     scene.players = players;
 
     scene.playersText.setText("...");
@@ -27,7 +27,7 @@ const Socket = (scene) => {
     });
   });
 
-  socket.on("order", (order) => {
+  socket.on("order", order => {
     scene.order = order;
   });
 
@@ -62,7 +62,7 @@ const Socket = (scene) => {
   });
 
   socket.on("endHand", () => {
-    scene.boardCards.map((obj) => obj.destroy());
+    scene.boardCards.map(obj => obj.destroy());
     scene.boardCards = [];
     scene.dropZone.data.values.cards = 0;
   });

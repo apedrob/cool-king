@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const server = express();
-const http = require("http").createServer(server);
+const http = require("http").createServer(server, { origins: "*:*" });
 const io = require("socket.io")(http);
 
 const Deck = require("./helpers/deck");

@@ -4,8 +4,7 @@
   "description": "back-end cool king",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "build": "node server.js"
+    "start": "nodemon index.js"
   },
   "author": "apedrob",
   "license": "ISC",

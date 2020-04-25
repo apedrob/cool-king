@@ -3,8 +3,8 @@ import io from "socket.io-client";
 import Card from "../helpers/Card";
 
 const Socket = (scene) => {
-  const socket = io("http://localhost:3000");
-
+  const socket = io(process.env.SERVER_URL);
+  console.log(process.env.SERVER_URL);
   socket.on("connect", function () {
     console.log("Connected");
   });

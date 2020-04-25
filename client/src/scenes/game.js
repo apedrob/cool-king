@@ -19,19 +19,19 @@ export default class Game extends Phaser.Scene {
   preload() {
     this.load.setBaseURL(`${process.env.PUBLIC_URL}`)
 
-    this.load.image("back", "cards/back.png");
+    this.load.image("back", "../../public/cards/back.png");
 
-    this.load.image("king", "cards/special/king.png");
-    this.load.image("joker", "cards/special/joker.png");
-    this.load.image("flag", "cards/special/flag.png");
-    this.load.image("mermaid", "cards/special/mermaid.png");
-    this.load.image("pirate", "cards/special/pirate.png");
+    this.load.image("king", "../../public/cards/special/king.png");
+    this.load.image("joker", "../../public/cards/special/joker.png");
+    this.load.image("flag", "../../public/cards/special/flag.png");
+    this.load.image("mermaid", "../../public/cards/special/mermaid.png");
+    this.load.image("pirate", "../../public/cards/special/pirate.png");
 
     for (let i = 1; i <= 13; i++) {
-      this.load.image(`bk${i}`, `cards/black/bk${i}.png`);
-      this.load.image(`b${i}`, `cards/blue/b${i}.png`);
-      this.load.image(`y${i}`, `cards/yellow/y${i}.png`);
-      this.load.image(`r${i}`, `cards/red/r${i}.png`);
+      this.load.image(`bk${i}`, `../../public/cards/black/bk${i}.png`);
+      this.load.image(`b${i}`, `../../public/cards/blue/b${i}.png`);
+      this.load.image(`y${i}`, `../../public/cards/yellow/y${i}.png`);
+      this.load.image(`r${i}`, `../../public/cards/red/r${i}.png`);
     }
 
     this.load.scenePlugin(

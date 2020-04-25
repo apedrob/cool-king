@@ -12,12 +12,14 @@ const COLOR_DARK = 0x260e04;
 export default class Game extends Phaser.Scene {
   constructor() {
     super({
-      key: "Game",
+      key: "Game"
     });
   }
 
   preload() {
-    this.load.setBaseURL(`${process.env.PUBLIC_URL}`)
+    this.load.crossOrigin = "anonymous";
+    this.load.maxParallelDownloads = Infinity;
+    // this.load.setBaseURL(`${process.env.PUBLIC_URL}`)
 
     this.load.image("back", "../../public/cards/back.png");
 
@@ -129,7 +131,7 @@ export default class Game extends Phaser.Scene {
       this.socket.emit("cardPlayed", gameObject, this.order[0]);
 
       if (this.boardCards.length === this.players) {
-        var boardValues = this.boardCards.map((card) => card.texture.key);
+        var boardValues = this.boardCards.map(card => card.texture.key);
         this.socket.emit("endHand", boardValues, this.order);
 
         if (this.opponentCards[0].length === 0) this.socket.emit("dealCards");

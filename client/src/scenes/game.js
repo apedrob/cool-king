@@ -1,4 +1,4 @@
-import Card from "../helpers/Card";
+import CardChoice from "../helpers/CardChoice";
 import Zone from "../helpers/Zone";
 import Dealer from "../actions/Dealer";
 import Socket from "../actions/Socket";
@@ -25,23 +25,28 @@ export default class Game extends Phaser.Scene {
 
     this.load.image("king", "../../public/cards/special/king.png");
     this.load.image("joker", "../../public/cards/special/joker.png");
+    this.load.image(
+      "joker-pirate",
+      "../../public/cards/special/joker-pirate.png"
+    );
+    this.load.image("joker-flag", "../../public/cards/special/joker-flag.png");
     this.load.image("flag", "../../public/cards/special/flag.png");
     this.load.image("mermaid", "../../public/cards/special/mermaid.png");
     this.load.image("pirate", "../../public/cards/special/pirate.png");
 
     for (let i = 1; i <= 13; i++) {
-      this.load.image(`bk${i}`, `../../public/cards/black/bk${i}.png`);
+      this.load.image(`p${i}`, `../../public/cards/black/bk${i}.png`);
       this.load.image(`b${i}`, `../../public/cards/blue/b${i}.png`);
       this.load.image(`y${i}`, `../../public/cards/yellow/y${i}.png`);
       this.load.image(`r${i}`, `../../public/cards/red/r${i}.png`);
     }
 
-    this.load.scenePlugin(
-      "rexuiplugin",
-      "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
-      "rexUI",
-      "rexUI"
-    );
+    // this.load.scenePlugin(
+    //   "rexuiplugin",
+    //   "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
+    //   "rexUI",
+    //   "rexUI"
+    // );
   }
 
   create() {
@@ -116,25 +121,22 @@ export default class Game extends Phaser.Scene {
 
     this.input.on("drop", (pointer, gameObject, dropZone) => {
       dropZone.data.values.cards++;
-      gameObject.x = dropZone.x - 350 + dropZone.data.values.cards * 100;
-      gameObject.y = dropZone.y;
+
+      gameObject.x = dropZone.x;
+      gameObject.y = 5 * (dropZone.y / 4);
       gameObject.clearTint();
       gameObject.disableInteractive();
-      console.log(this.playerCards);
 
-      this.boardCards.push(gameObject);
-      var card = this.playerCards.indexOf(gameObject.texture.key);
-      this.playerCards.splice(card, 1);
+      console.log(gameObject);
 
-      console.log(this.playerCards);
+      if (gameObject.texture.key === "joker") {
+        var jokerChoice = new CardChoice(this, gameObject);
+      } else {
+        this.boardCards.push(gameObject);
+        var card = this.playerCards.indexOf(gameObject.texture.key);
+        this.playerCards.splice(card, 1);
 
-      this.socket.emit("cardPlayed", gameObject, this.order[0]);
-
-      if (this.boardCards.length === this.players) {
-        var boardValues = this.boardCards.map(card => card.texture.key);
-        this.socket.emit("endHand", boardValues, this.order);
-
-        if (this.opponentCards[0].length === 0) this.socket.emit("dealCards");
+        this.socket.emit("cardPlayed", gameObject);
       }
     });
   }

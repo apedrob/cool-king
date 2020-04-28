@@ -6,17 +6,17 @@ export default class Zone {
           scene.scale.width / 2,
           scene.scale.height / 2,
           (2 * scene.scale.width) / 3,
-          scene.scale.height / 3
+          scene.scale.height / 2
         )
         .setRectangleDropZone(
           (2 * scene.scale.width) / 3,
-          (4 * scene.scale.height) / 9
-        )
+          scene.scale.height / 2
+        );
       dropZone.setData({ cards: 0 });
       return dropZone;
     };
 
-    this.renderOutline = (dropZone) => {
+    this.renderOutline = dropZone => {
       let dropZoneOutline = scene.add.graphics();
       dropZoneOutline.lineStyle(2, 0xfff380);
       dropZoneOutline.fillStyle(0x2c5832);

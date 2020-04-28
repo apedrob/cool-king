@@ -1,6 +1,6 @@
 import Card from "../helpers/Card";
 
-const Dealer = (scene) => {
+const Dealer = scene => {
   const renderCards = (round, hand, players) => {
     let opponentCards = new Array(players - 1);
     for (let c = 0; c < players - 1; c++) {
@@ -15,7 +15,7 @@ const Dealer = (scene) => {
           scene.scale.width / 2 -
             (Math.floor(round / 2) - i) * 100 +
             (round % 2 === 0 ? 50 : 0),
-          (6 * scene.scale.height) / 7,
+          (7 * scene.scale.height) / 8,
           hand[i]
         );
       if (i >= Math.floor(round / 2))
@@ -23,7 +23,7 @@ const Dealer = (scene) => {
           scene.scale.width / 2 +
             (i - Math.floor(round / 2)) * 100 +
             (round % 2 === 0 ? 50 : 0),
-          (6 * scene.scale.height) / 7,
+          (7 * scene.scale.height) / 8,
           hand[i]
         );
 
@@ -54,7 +54,7 @@ const Dealer = (scene) => {
                   ? (Math.floor(round / 2) - i) * -25
                   : (i - Math.floor(round / 2)) * 25) +
                 (round % 2 === 0 ? 12.5 : 0),
-              scene.scale.height / 7,
+              scene.scale.height / 8,
               "back"
             )
             .disableInteractive();
@@ -79,8 +79,51 @@ const Dealer = (scene) => {
     scene.opponentCards = opponentCards;
   };
 
+  const renderOpponentCard = (playerID, cardObject, boardCards) => {
+    let sprite = cardObject.textureKey;
+    let turn = scene.order.indexOf(playerID);
+    let players = scene.players;
+    let board = boardCards;
+
+    scene.dropZone.data.values.cards++;
+    scene.opponentCards[turn - 1].shift().destroy();
+
+    var opponentCard = new Card(scene);
+
+    let sections = players > 3 ? players - 2 : players;
+    if (players > 3) turn--;
+
+    if (turn === 0) {
+      board.push(
+        opponentCard
+          .render(scene.dropZone.x / 2, scene.dropZone.y, sprite)
+          .disableInteractive()
+      );
+    } else if (turn < sections) {
+      board.push(
+        opponentCard
+          .render(
+            players === 6
+              ? ((turn + 1) * scene.scale.width) / 6
+              : (turn * scene.scale.width) / sections,
+            3 * (scene.dropZone.y / 4),
+            sprite
+          )
+          .disableInteractive()
+      );
+    } else {
+      board.push(
+        opponentCard
+          .render(3 * (scene.dropZone.x / 2), scene.dropZone.y, sprite)
+          .disableInteractive()
+      );
+    }
+    scene.boardCards = board;
+  };
+
   return {
     renderCards,
+    renderOpponentCard
   };
 };
 

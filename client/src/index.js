@@ -9,11 +9,21 @@ const config = {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: "100%",
-    height: "100%",
+    height: "100%"
   },
+  // plugins: {
+  //   global: [
+  //     {
+  //       key: "rexScale",
+  //       plugin: ScalePlugin,
+  //       start: true
+  //     }
+  //     // ...
+  //   ]
+  // },
   parent: "cool-king",
   // antiAlising: false,
-  scene: [Game],
+  scene: [Game]
 };
 
 const game = new Phaser.Game(config);

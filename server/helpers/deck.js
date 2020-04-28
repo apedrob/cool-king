@@ -2,7 +2,7 @@ module.exports = class Deck {
   constructor() {
     var deck = [];
     for (let i = 1; i <= 13; i++) {
-      deck.push(`bk${i}`);
+      deck.push(`p${i}`);
       deck.push(`b${i}`);
       deck.push(`y${i}`);
       deck.push(`r${i}`);
@@ -27,9 +27,6 @@ module.exports = class Deck {
       const j = Math.floor(Math.random() * (i + 1));
       [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-
-    console.log(deck)
-
     var allHands = [];
 
     for (let p = players; p > 0; p--) {
@@ -38,6 +35,7 @@ module.exports = class Deck {
         playerHand.push(deck.pop());
       }
 
+      playerHand.sort((c1, c2) => c1.localeCompare(c2));
       allHands.push(playerHand);
     }
     return allHands;

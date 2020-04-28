@@ -5,13 +5,17 @@ const http = require("http").createServer(server, { origins: "*:*" });
 const io = require("socket.io")(http);
 
 const Deck = require("./helpers/deck");
+const Decision = require("./helpers/decision");
 
 server.use(cors({ credentials: true, origin: true }));
 
-let players = [];
-let round = 0;
+var players = [];
+var round = 0;
+var board = [];
+var hands = [];
+var bets = [];
 
-io.on("connection", function(socket) {
+io.on("connection", socket => {
   players.push(socket.id);
 
   if (players.length === 1) {
@@ -21,9 +25,9 @@ io.on("connection", function(socket) {
   io.emit("newPlayer", players.length);
 
   socket.on("startGame", () => {
-    round = 1;
+    round = 10;
     var deck = new Deck();
-    var hands = deck.giveHands(players.length, round);
+    hands = deck.giveHands(players.length, round);
 
     player = players.map((player, index) => {
       var order = [];
@@ -34,40 +38,59 @@ io.on("connection", function(socket) {
       io.to(player).emit("dealCards", hands[index], round, 0);
       io.to(player).emit("order", order);
     });
+    io.emit("turn", 0);
   });
 
-  socket.on("dealCards", () => {
-    round++;
-    var deck = new Deck();
-    var hands = deck.giveHands(players.length, round);
+  // socket.on("dealCards", () => {
 
-    player = players.map((player, index) =>
-      io.to(player).emit("dealCards", hands[index], round, 0)
-    );
-  });
+  // });
 
-  socket.on("cardPlayed", function(gameObject, playerID) {
-    socket.broadcast.emit("cardPlayed", gameObject, playerID);
-    // socket.broadcast.emit("freeze", gameObject, isPlayerA);
-  });
+  socket.on("cardPlayed", function(cardObject) {
+    var playerID = players.indexOf(socket.id);
 
-  socket.on("endHand", function(boardCards, order) {
-    // setTimeout(() => {
-    io.emit("endHand");
+    socket.broadcast.emit("cardPlayed", playerID, cardObject);
 
-    // todo: remove late on with a crono
-    // socket.broadcast.emit("startHand");scene.opponentCards.length === 0) {
-    //       socket.emit("dealCards");
-    //     }
-    // }}, 1000);
+    console.log(cardObject);
+    var card = cardObject.textureKey;
 
-    // socket.broadcast.emit("freeze", gameObject, isPlayerA);
+    board.push({ player: playerID, card: card });
+    hands[playerID] = hands[playerID].filter(c => c != card);
+
+    console.log(hands);
+
+    if (board.length === players.length) {
+      var decision = new Decision();
+
+      var winner = decision.winner(board);
+      console.log(winner);
+      console.log(board);
+
+      setTimeout(() => {
+        board = [];
+        io.emit("endHand");
+
+        if (hands[playerID].length === 0) {
+          // io.emit("startRound"); // bet and deal cards
+          round++;
+          var deck = new Deck();
+          hands = deck.giveHands(players.length, round);
+
+          player = players.map((player, index) =>
+            io.to(player).emit("dealCards", hands[index], round)
+          );
+        }
+        io.emit("turn", winner); // next player round/hand
+      }, 1500);
+    } else {
+      io.emit("turn", (playerID + 1) % players.length); // next player
+    }
   });
 
   socket.on("disconnect", function() {
     console.log("A user disconnected: " + socket.id);
     players = players.filter(player => player !== socket.id);
     io.emit("newPlayer", players.length);
+    io.to(players[0]).emit("host");
   });
 });
 

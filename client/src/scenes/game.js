@@ -12,7 +12,7 @@ const COLOR_DARK = 0x260e04;
 export default class Game extends Phaser.Scene {
   constructor() {
     super({
-      key: "Game"
+      key: "Game",
     });
   }
 
@@ -78,15 +78,21 @@ export default class Game extends Phaser.Scene {
       .setFontSize(18)
       .setFontFamily("Trebuchet MS")
       .setColor("#ffffff")
-      .setInteractive();
+      
     this.dealText.setOrigin(0.5);
 
     this.dealText.on("pointerover", () => {
-      this.dealText.setColor("#fff380");
+      this.dealText.setColor(
+        this.host && this.players > 1 ? "#fff380" : "#d61a3c"
+      );
     });
 
     this.dealText.on("pointerout", () => {
       this.dealText.setColor("#ffffff");
+    });
+
+    this.dealText.on("pointerdown", () => {
+      if (this.host && this.players > 1) this.socket.emit("startGame");
     });
 
     this.playersText = this.add

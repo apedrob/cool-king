@@ -15,10 +15,10 @@ export default class CardChoice {  // should be a container and action
 
     var flag = scene.add
       .image((3 * scene.scale.width) / 7, scene.scale.height / 2, "joker-flag")
-      .setScale(
-        scene.scale.height / SCREEN_HEIGHT,
-        scene.scale.height / SCREEN_HEIGHT
-      )
+      // .setScale(
+      //   scene.scale.height / SCREEN_HEIGHT,
+      //   scene.scale.height / SCREEN_HEIGHT
+      // )
       .setInteractive();
 
     var pirate = scene.add
@@ -27,10 +27,10 @@ export default class CardChoice {  // should be a container and action
         scene.scale.height / 2,
         "joker-pirate"
       )
-      .setScale(
-        scene.scale.height / SCREEN_HEIGHT,
-        scene.scale.height / SCREEN_HEIGHT
-      )
+      // .setScale(
+      //   scene.scale.height / SCREEN_HEIGHT,
+      //   scene.scale.height / SCREEN_HEIGHT
+      // )
       .setInteractive();
 
     flag.on("pointerdown", () => {

@@ -1,13 +1,13 @@
 import io from "socket.io-client";
 
-const Socket = scene => {
+const Socket = (scene) => {
   const socket = io(process.env.SERVER_URL, { transport: ["websocket"] });
 
-  socket.on("connect", function() {
+  socket.on("connect", function () {
     console.log("Connected");
   });
 
-  socket.on("newPlayer", players => {
+  socket.on("newPlayer", (players) => {
     scene.players = players;
 
     scene.playersText.setText("...");
@@ -16,16 +16,13 @@ const Socket = scene => {
 
   socket.on("host", () => {
     scene.host = true;
-
     scene.dealText.setText("...");
     scene.dealText.setText("Start Game!");
 
-    scene.dealText.on("pointerdown", () => {
-      socket.emit("startGame");
-    });
+    scene.dealText.setInteractive();
   });
 
-  socket.on("order", order => {
+  socket.on("order", (order) => {
     scene.order = order;
   });
 
@@ -34,10 +31,11 @@ const Socket = scene => {
     scene.playerCards = hand;
     scene.dealer.renderCards(round, hand, scene.players);
 
-    scene.playersText.setVisible(false);
-    scene.dealText.disableInteractive();
+    scene.playersText.destroy();
 
+    scene.dealText.disableInteractive();
     scene.dealText.setText("...");
+    scene.dealText.setPosition(scene.scale.width / 2, scene.scale.height / 2);
     scene.dealText.setText(`Round ${round}`);
   });
 
@@ -61,12 +59,12 @@ const Socket = scene => {
   });
 
   socket.on("endHand", () => {
-    scene.boardCards.map(obj => obj.destroy());
+    scene.boardCards.map((obj) => obj.destroy());
     scene.boardCards = [];
     scene.dropZone.data.values.cards = 0;
   });
 
-  socket.on("turn", playerID => {
+  socket.on("turn", (playerID, color) => {
     if (playerID === scene.order[0] && scene.scene.isPaused()) {
       scene.scene.resume(); //setInterative
     }

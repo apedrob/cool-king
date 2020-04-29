@@ -1,4 +1,4 @@
-const SCREEN_HEIGHT = 1080
+const SCREEN_HEIGHT = 1440
 
 export default class Card {
   constructor(scene) {

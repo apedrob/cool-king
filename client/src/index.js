@@ -3,13 +3,13 @@ import Game from "./scenes/game";
 
 const config = {
   type: Phaser.AUTO,
-  autoResize: true,
+  // autoResize: true,
   backgroundColor: "#326238",
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: "100%",
-    height: "100%"
+    width: "100vw",
+    height: "100vh"
   },
   // plugins: {
   //   global: [
@@ -22,7 +22,8 @@ const config = {
   //   ]
   // },
   parent: "cool-king",
-  // antiAlising: false,
+  antiAlising: false,
+  resolution: 2,
   scene: [Game]
 };
 

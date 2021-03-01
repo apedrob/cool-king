@@ -1,6 +1,6 @@
 import Card from "../helpers/Card";
 
-const Dealer = scene => {
+const Dealer = (scene) => {
   const renderCards = (round, hand, players) => {
     let opponentCards = new Array(players - 1);
     for (let c = 0; c < players - 1; c++) {
@@ -121,51 +121,142 @@ const Dealer = scene => {
     scene.boardCards = board;
   };
 
+  const renderBets = (bets, boardBets) => {
+    let players = scene.players;
+    let board = boardBets;
+
+    for (let p = 0; p < players; p++) {
+      let sections = players > 3 ? players - 2 : players;
+
+      let player = scene.order[p];
+      let index = bets.findIndex((b) => b.player === player);
+      let bet = bets[index].bet;
+      if (p === 0) {
+        board.push(
+          scene.add
+            .text(
+              scene.scale.width / 2,
+              (23 * scene.scale.height) / 32,
+              `0 / ${bet}`
+            )
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+        continue;
+      }
+      if (players > 3 && p === 1) {
+        board.push(
+          scene.add
+            .text(scene.scale.width / 5, scene.dropZone.y, `0 / ${bet}`)
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+      }
+      if (sections !== p) {
+        board.push(
+          scene.add
+            .text(
+              players === 6
+                ? ((p + 1) * scene.scale.width) / 6
+                : (p * scene.scale.width) / sections,
+              (9 * scene.scale.height) / 32,
+              `0 / ${bet}`
+            )
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+      } else {
+        board.push(
+          scene.add
+            .text((4 * scene.scale.width) / 5, scene.dropZone.y, `0 / ${bet}`)
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+        break;
+      }
+    }
+
+    scene.bets = board;
+  };
+
+  const renderScores = (scores) => {
+    let players = scene.players;
+    let board = scene.scores;
+
+    for (let p = 0; p < players; p++) {
+      let sections = players > 3 ? players - 2 : players;
+
+      let player = scene.order[p];
+      let score = scores[player];
+
+      if (p === 0) {
+        board.push(
+          scene.add
+            .text(
+              scene.scale.width / 2,
+              (25 * scene.scale.height) / 32,
+              `${score}`
+            )
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+        continue;
+      }
+      if (players > 3 && p === 1) {
+        board.push(
+          scene.add
+            .text((3 * scene.scale.width) / 20, scene.dropZone.y, `${score}`)
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+      }
+      if (sections !== p) {
+        board.push(
+          scene.add
+            .text(
+              (p * scene.scale.width) / sections,
+              (7 * scene.scale.height) / 32,
+              `${score}`
+            )
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+      } else {
+        board.push(
+          scene.add
+            .text((17 * scene.scale.width) / 20, scene.dropZone.y, `${score}`)
+            .setFontSize(18)
+            .setFontFamily("Trebuchet MS")
+            .setColor("#ffffff")
+            .setOrigin(0.5)
+        );
+        break;
+      }
+    }
+
+    scene.scores = board;
+  };
+
   return {
     renderCards,
-    renderOpponentCard
+    renderOpponentCard,
+    renderBets,
+    renderScores,
   };
 };
 
 export default Dealer;
-
-// var numberBar = this.rexUI.add
-// .numberBar({
-//   x: 700,
-//   y: 550,
-//   width: 300, // Fixed width
-
-//   background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
-
-//   icon: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
-
-//   slider: {
-//     // width: 120, // Fixed width
-//     track: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_PRIMARY),
-//     indicator: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
-//     input: "click",
-//     // gap: 0.1,
-//   },
-
-//   text: this.add.text(0, 0, "").setFontSize(20).setFixedSize(35, 0),
-
-//   space: {
-//     left: 10,
-//     right: 10,
-//     top: 10,
-//     bottom: 10,
-
-//     icon: 10,
-//     slider: 10,
-//   },
-
-//   valuechangeCallback: function (newValue, oldValue, numberBar) {
-//     numberBar.text = Math.round(Phaser.Math.Linear(0, 10, newValue));
-//   },
-
-//   gap: 0.3,
-// })
-// .layout();
-
-// numberBar.setValue(0, 0, 10);
-// }

@@ -1,4 +1,5 @@
 import io from "socket.io-client";
+import BetButtons from "../helpers/BetButtons";
 
 const Socket = (scene) => {
   const socket = io(process.env.SERVER_URL, { transport: ["websocket"] });
@@ -26,12 +27,24 @@ const Socket = (scene) => {
     scene.order = order;
   });
 
-  socket.on("dealCards", (hand, round) => {
+  socket.on("dealCards", (hand, round, scores) => {
     scene.round = round;
     scene.playerCards = hand;
+    console.log(round);
+
     scene.dealer.renderCards(round, hand, scene.players);
 
+    if (round > 1) {
+      scene.scores.map((obj) => obj.destroy());
+      scene.scores = [];
+      scene.dealer.renderScores(scores);
+    }
+
     scene.playersText.destroy();
+
+    scene.bets.map((obj) => obj.destroy());
+    scene.bets = [];
+    scene.betButtons = new BetButtons(scene, round);
 
     scene.dealText.disableInteractive();
     scene.dealText.setText("...");
@@ -39,37 +52,43 @@ const Socket = (scene) => {
     scene.dealText.setText(`Round ${round}`);
   });
 
-  socket.on("cardPlayed", (playerID, gameObject) => {
-    scene.dealer.renderOpponentCard(playerID, gameObject, scene.boardCards);
-    // scene.dropZone.data.values.cards++;
-    // let sprite = gameObject.textureKey;
-    // let turn = scene.order.indexOf(playerID) - 1;
-    // scene.opponentCards[turn].shift().destroy();
+  socket.on("startRound", (bets) => {
+    scene.betButtons.destroy();
 
-    // var card = new Card(scene);
-    // scene.boardCards.push(
-    //   card
-    //     .render(
-    //       scene.dropZone.x - 350 + scene.dropZone.data.values.cards * 100,
-    //       scene.dropZone.y,
-    //       sprite
-    //     )
-    //     .disableInteractive()
-    // );
+    scene.dealer.renderBets(bets, scene.bets);
   });
 
-  socket.on("endHand", () => {
-    scene.boardCards.map((obj) => obj.destroy());
-    scene.boardCards = [];
-    scene.dropZone.data.values.cards = 0;
+  socket.on("cardPlayed", (playerID, gameObject) => {
+    scene.dealer.renderOpponentCard(playerID, gameObject, scene.boardCards);
+  });
+
+  socket.on("endHand", (stats) => {
+    setTimeout(() => {
+      scene.boardCards.map((obj) => obj.destroy());
+      scene.boardCards = [];
+      scene.dropZone.data.values.cards = 0;
+    }, 1500);
+
+    let player = scene.order.indexOf(stats.player);
+    let betText = scene.bets[player];
+
+    betText.setText("...");
+    betText.setText(`${stats.won} / ${stats.bet}`);
+
+    scene.bets.map((bt) => bt.setColor("#ffffff"));
   });
 
   socket.on("turn", (playerID, color) => {
-    if (playerID === scene.order[0] && scene.scene.isPaused()) {
-      scene.scene.resume(); //setInterative
+    let player = scene.order.indexOf(playerID);
+    scene.bets.map((bt, ind) =>
+      player === ind ? bt.setColor("#fff380") : bt.setColor("#ffffff")
+    );
+
+    if (playerID === scene.order[0]) {
+      scene.dropZone.input.enabled = true;
     }
-    if (playerID !== scene.order[0] && scene.scene.isActive()) {
-      scene.scene.pause(); //disableInteractive
+    if (playerID !== scene.order[0]) {
+      scene.dropZone.input.enabled = false;
     }
   });
 

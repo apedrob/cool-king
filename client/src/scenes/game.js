@@ -5,10 +5,6 @@ import Socket from "../actions/Socket";
 
 import io from "socket.io-client";
 
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
-
 export default class Game extends Phaser.Scene {
   constructor() {
     super({
@@ -41,12 +37,12 @@ export default class Game extends Phaser.Scene {
       this.load.image(`r${i}`, `../../public/cards/red/r${i}.png`);
     }
 
-    // this.load.scenePlugin(
-    //   "rexuiplugin",
-    //   "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
-    //   "rexUI",
-    //   "rexUI"
-    // );
+    this.load.scenePlugin(
+      "rexuiplugin",
+      "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
+      "rexUI",
+      "rexUI"
+    );
   }
 
   create() {
@@ -54,13 +50,17 @@ export default class Game extends Phaser.Scene {
     this.players = 1;
     this.round = 0;
     this.order = [];
+    this.scores = [];
+    this.color = null;
 
     this.opponentCards = [];
     this.playerCards = [];
     this.boardCards = [];
+    this.bets = [];
 
     this.dealer = new Dealer(this);
     this.zone = new Zone(this);
+    this.betButtons;
 
     this.dropZone = this.zone.renderZone();
     this.outline = this.zone.renderOutline(this.dropZone);
@@ -77,8 +77,8 @@ export default class Game extends Phaser.Scene {
       )
       .setFontSize(18)
       .setFontFamily("Trebuchet MS")
-      .setColor("#ffffff")
-      
+      .setColor("#ffffff");
+
     this.dealText.setOrigin(0.5);
 
     this.dealText.on("pointerover", () => {
@@ -133,10 +133,8 @@ export default class Game extends Phaser.Scene {
       gameObject.clearTint();
       gameObject.disableInteractive();
 
-      console.log(gameObject);
-
       if (gameObject.texture.key === "joker") {
-        var jokerChoice = new CardChoice(this, gameObject);
+        new CardChoice(this, gameObject);
       } else {
         this.boardCards.push(gameObject);
         var card = this.playerCards.indexOf(gameObject.texture.key);

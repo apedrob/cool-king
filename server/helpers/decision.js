@@ -3,7 +3,7 @@ module.exports = class Decision {
     var winner;
     var hasSpecial = false;
     var index;
-    var cards = board.map(p =>
+    var cards = board.map((p) =>
       p.card.startsWith("joker") ? p.card.split("-")[1] : p.card
     );
 
@@ -29,7 +29,7 @@ module.exports = class Decision {
       let bestCard = {
         index: 0,
         number: 0,
-        color: null
+        color: null,
       };
 
       cards.forEach((card, index) => {
@@ -57,5 +57,18 @@ module.exports = class Decision {
     }
 
     return board[winner].player;
+  }
+
+  scores(bets, round, scores) {
+    bets.forEach((b) => {
+      var score = 0;
+      if (b.bet === 0) score = b.won === 0 ? round * 10 : round * -10;
+      else if (b.bet === b.won) score = b.bet * 20;
+      else {
+        score = Math.abs(b.bet - b.won) * -10;
+      }
+      scores[b.player] = scores[b.player] + score;
+    });
+    return scores;
   }
 };

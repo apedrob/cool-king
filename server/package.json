@@ -1,17 +1,19 @@
 {
-  "name": "be-cool",
-  "version": "1.0.0",
-  "description": "back-end cool king",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon index.js"
-  },
-  "author": "apedrob",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "nodemon": "^2.0.3",
-    "socket.io": "^2.3.0"
-  }
+    "name": "@cool-king/server",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "bun --watch src/index.ts",
+        "build": "tsc",
+        "check": "tsc --noEmit",
+        "start": "bun src/index.ts"
+    },
+    "dependencies": {
+        "@cool-king/engine": "*",
+        "socket.io": "^4.8.0"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.2.0",
+        "typescript": "^5.7.0"
+    }
 }

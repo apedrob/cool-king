@@ -1,0 +1,532 @@
+/* ═══════════════════════════════════════════════════
+   TAVERN DESIGN SYSTEM — Tactile Skeuomorphism
+   Pure CSS • Resolution-Independent • Full HD+
+   ═══════════════════════════════════════════════════ */
+
+/* ─── Custom Fonts ──────────────────────────── */
+@font-face {
+    font-family: "IM Fell English SC";
+    src: url("/fonts/IMFellEnglishSC-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ─── Reset ─────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #1a0e08;
+}
+
+/* ─── Custom Properties ─────────────────────────── */
+:root {
+    /* Wood palette */
+    --wood-darkest: #1a0e08;
+    --wood-dark: #2a1a10;
+    --wood-med: #5a3a22;
+    --wood-light: #7a5a3a;
+
+    /* Parchment palette */
+    --parch-light: #e8d5a8;
+    --parch-med: #c8a870;
+    --parch-dark: #a08050;
+
+    /* Gold / Amber */
+    --gold: #d4af37;
+    --gold-dim: #a08520;
+    --gold-glow: #ffd754;
+    --amber: #f5a623;
+    --amber-dim: #b3791a;
+
+    /* Leather */
+    --leather-dark: #4a3020;
+    --leather-med: #6a4a30;
+    --leather-light: #8a6a4a;
+
+    /* Ink */
+    --ink: #2a1a0a;
+    --ink-faded: #5a4a3a;
+
+    /* UI */
+    --danger: #8b2020;
+    --success: #2a6a2a;
+    --status-dot: #c4a030;
+
+    /* Typography
+       --font-title   : IM Fell English SC — ceremonial titles (all-caps only, ≤6 words)
+       --font-ui      : Pirata One — buttons, labels, HUD values, panel chrome
+       --font-flavor  : Special Elite — parchment body, footers, room codes, diegetic text
+    */
+    --font-title: "Pirata One", "Georgia", serif;
+    --font-ui: "IM Fell English SC", "Georgia", serif;
+    --font-flavor: "Special Elite", "Courier New", monospace;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(212, 175, 55, 0.3);
+    --shadow-inset: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-fast: 150ms var(--ease-out);
+    --transition-med: 300ms var(--ease-out);
+}
+
+/* ─── Typography ────────────────────────────────── */
+.title-gold {
+    font-family: var(--font-title);
+    color: var(--gold);
+    text-shadow:
+        0 0 10px rgba(212, 175, 55, 0.4),
+        0 2px 0 #8a6a20,
+        0 3px 0 #6a5018,
+        0 4px 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.08em;
+}
+
+.heading-ink {
+    font-family: var(--font-ui);
+    color: var(--ink);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.03em;
+}
+
+.body-ink {
+    font-family: var(--font-flavor);
+    color: var(--ink);
+    line-height: 1.5;
+}
+
+.handwritten {
+    font-family: var(--font-flavor);
+    color: var(--ink-faded);
+}
+
+/* ─── Material: Wood Background (Pure CSS) ──────── */
+.wood-bg {
+    background:
+        url('/textures/wood-table-bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.wood-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        /* Warm amber glow from center-bottom (candle/lantern feel) */
+        radial-gradient(ellipse 50% 45% at 50% 70%,
+            rgba(245, 166, 35, 0.08) 0%,
+            transparent 65%),
+        /* Warm ambient light from right side */
+        radial-gradient(ellipse 60% 70% at 85% 85%,
+            rgba(245, 166, 35, 0.06) 0%,
+            transparent 60%),
+        /* Deep vignette — more cinematic */
+        radial-gradient(ellipse 75% 65% at 50% 50%,
+            transparent 25%,
+            rgba(0, 0, 0, 0.45) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ─── Material: Parchment Panel ─────────────────── */
+.parchment {
+    background:
+        /* Warm tint overlay */
+        linear-gradient(170deg,
+            rgba(232, 213, 168, 0.15) 0%,
+            rgba(220, 200, 150, 0.1) 50%,
+            rgba(208, 188, 136, 0.15) 100%),
+        /* Actual parchment texture */
+        url('/textures/parchment-light.svg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 6px;
+    box-shadow:
+        var(--shadow-lg),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(160, 128, 80, 0.3);
+    position: relative;
+}
+
+.parchment-dark {
+    background:
+        /* Darker tint overlay */
+        linear-gradient(175deg,
+            rgba(160, 130, 80, 0.2) 0%,
+            rgba(140, 110, 60, 0.15) 50%,
+            rgba(120, 90, 50, 0.2) 100%),
+        /* Actual dark parchment texture */
+        url('/textures/parchment-dark.svg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 6px;
+    box-shadow:
+        var(--shadow-lg),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(140, 108, 60, 0.3);
+    position: relative;
+}
+
+/* ─── Material: Leather (Pure CSS) ──────────────── */
+.leather {
+    background:
+        /* Grain effect */
+        radial-gradient(ellipse at 25% 25%, rgba(120, 90, 50, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 75% 75%, rgba(90, 60, 30, 0.06) 0%, transparent 40%),
+        linear-gradient(165deg,
+            #5a3a24 0%,
+            #6a4a30 30%,
+            #5e3e28 60%,
+            #4a3020 100%);
+    border-radius: 8px;
+    box-shadow:
+        var(--shadow-md),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(90, 60, 30, 0.4);
+}
+
+/* ─── Rivets (CSS-only metal pins) ──────────────── */
+.rivet {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+            #9a8a70 0%,
+            #6a5a40 50%,
+            #4a3a28 100%);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    position: absolute;
+    z-index: 5;
+}
+
+/* ─── Leather Button (Pure CSS) ─────────────────── */
+.btn-leather {
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(140, 100, 60, 0.12) 0%, transparent 50%),
+        linear-gradient(165deg,
+            #5a3a24 0%,
+            #6a4a30 30%,
+            #5e3e28 60%,
+            #4a3020 100%);
+    border: 2px dashed var(--gold-dim);
+    border-radius: 8px;
+    padding: 12px 28px;
+    color: var(--gold);
+    font-family: var(--font-flavor);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast);
+    user-select: none;
+    position: relative;
+}
+
+.btn-leather:hover {
+    filter: brightness(1.15);
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.5),
+        0 0 16px rgba(212, 175, 55, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5), 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.btn-leather:active {
+    transform: translateY(2px);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-leather:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.3);
+}
+
+.btn-leather.prominent {
+    font-size: 24px;
+    padding: 16px 40px;
+    border-width: 3px;
+}
+
+/* ─── Parchment Input ───────────────────────────── */
+.input-parchment {
+    background: rgba(0, 0, 0, 0.08);
+    border: none;
+    border-bottom: 2px solid var(--ink-faded);
+    padding: 10px 14px;
+    font-family: var(--font-flavor);
+    font-size: 18px;
+    color: var(--ink);
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    box-shadow: var(--shadow-inset);
+    transition: border-color var(--transition-fast);
+}
+
+.input-parchment:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+    box-shadow: var(--shadow-inset), 0 2px 0 var(--gold-dim);
+}
+
+.input-parchment::placeholder {
+    color: var(--ink-faded);
+    opacity: 0.5;
+    font-style: italic;
+}
+
+/* ─── Fog / Smoke (Pure CSS) ────────────────────── */
+.smoke-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+.smoke-layer::before,
+.smoke-layer::after {
+    content: "";
+    position: absolute;
+    bottom: -30px;
+    width: 200%;
+    height: 160px;
+    animation: fog-drift 25s linear infinite;
+}
+
+.smoke-layer::before {
+    background:
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(200, 180, 150, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 60% at 30% 90%, rgba(180, 160, 130, 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 55% at 55% 85%, rgba(190, 170, 140, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 80% 90%, rgba(200, 180, 150, 0.10) 0%, transparent 70%);
+}
+
+.smoke-layer::after {
+    background:
+        radial-gradient(ellipse 38% 55% at 15% 85%, rgba(190, 170, 140, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 42% 50% at 45% 75%, rgba(200, 180, 150, 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 36% 60% at 70% 90%, rgba(180, 160, 130, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 95% 80%, rgba(190, 170, 140, 0.06) 0%, transparent 70%);
+    animation-delay: -12s;
+    animation-duration: 30s;
+}
+
+@keyframes fog-drift {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+
+
+
+/* ─── Compass Rose Watermark ────────────────────── */
+.compass-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    height: 85%;
+    background-image: url('/textures/compass-rose.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.12;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+/* ─── Pinned Note (torn paper) ──────────────────── */
+.pinned-note {
+    background:
+        linear-gradient(170deg,
+            rgba(232, 216, 176, 0.2) 0%,
+            rgba(220, 200, 150, 0.1) 100%),
+        url('/textures/parchment-light.svg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 3px;
+    box-shadow:
+        2px 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    position: relative;
+    padding: 8px 14px;
+}
+
+/* Pin/tack on top */
+.pinned-note::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #c0a040, #8a6a20);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Parchment Tab (opponent/score badges) ─────── */
+.parchment-tab {
+    background:
+        linear-gradient(175deg,
+            rgba(228, 208, 160, 0.15) 0%,
+            rgba(204, 184, 128, 0.1) 100%),
+        url('/textures/parchment-light.svg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    padding: 8px 16px;
+    box-shadow:
+        1px 2px 6px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(180, 150, 100, 0.2);
+    position: relative;
+}
+
+/* ─── Status Dot ────────────────────────────────── */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.status-dot.waiting {
+    background: var(--status-dot);
+    box-shadow: 0 0 6px var(--status-dot);
+}
+
+.status-dot.ready {
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ─── Entrance Animations ───────────────────────── */
+@keyframes slide-in-left {
+    from {
+        transform: translateX(-40px) rotate(-2deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        transform: translateX(40px) rotate(2deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ─── Theme Scrollbars ───────────────────────────── */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+    margin: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4a2c1b;
+    /* Leather brown */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent, rgba(0, 0, 0, 0.2));
+    border: 2px solid #b8962e;
+    /* Gold dim */
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3a2518;
+    border-color: #d4af37;
+    /* Gold */
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #4a2c1b rgba(0, 0, 0, 0.1);
+}

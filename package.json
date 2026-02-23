@@ -1,0 +1,25 @@
+{
+  "name": "cool-king",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "engine",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "bun run scripts/dev.ts",
+    "build": "bun run --cwd engine build && bun run --cwd client build",
+    "start": "bun run --cwd server start",
+    "test": "bun run --cwd engine test",
+    "check": "bun run --cwd engine check && bun run --cwd server check && bun run --cwd client check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.1",
+    "eslint-plugin-svelte": "^3.15.0",
+    "svelte-eslint-parser": "^1.4.1",
+    "typescript-eslint": "^8.56.1"
+  }
+}

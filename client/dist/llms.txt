@@ -1,0 +1,20 @@
+# LastRound.io
+
+> Free online multiplayer trick-taking card game. Play instantly in your browser. No download, no signup required.
+
+## About
+
+LastRound is an original pirate-themed trick-taking card game for 2–6 players.
+Play free in any modern browser — no app install, no account required.
+The #1 Free Online Skull King Alternative.
+
+Features:
+- Instant multiplayer: create a room and share the link
+- 2–6 players per game
+- Trick-taking with bidding, special pirate cards, and strategic depth
+- Works on desktop and mobile browsers
+- No downloads, no sign-ups, completely free
+
+## Links
+
+- Play Now: https://lastround.io/

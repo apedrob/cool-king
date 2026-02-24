@@ -333,6 +333,7 @@
     .bot-buttons {
         display: flex;
         gap: 8px;
+        flex-wrap: wrap;
     }
 
     .btn-dark {

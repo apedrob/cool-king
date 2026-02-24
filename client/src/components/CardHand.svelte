@@ -208,6 +208,15 @@
         user-select: none;
     }
 
+    @media (max-width: 600px) {
+        .hand-card {
+            margin-left: -44px; /* Squish cards closer on phone */
+        }
+        .hand-card:first-child {
+            margin-left: 0;
+        }
+    }
+
     .hand-card:first-child {
         margin-left: 0;
     }

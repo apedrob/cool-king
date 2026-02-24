@@ -332,7 +332,7 @@
     }
 
     .lobby-title {
-        font-size: clamp(56px, 8vw, 96px);
+        font-size: clamp(40px, 8vw, 96px);
         margin-bottom: 0;
         transform: rotate(-2deg);
     }
@@ -370,6 +370,17 @@
         flex-direction: column;
         gap: 16px;
         min-height: 0;
+    }
+
+    @media (max-width: 800px) {
+        .lobby-columns {
+            flex-direction: column;
+            padding: 12px 16px;
+        }
+        .lobby-left {
+            flex: none;
+            width: 100%;
+        }
     }
 
     .lobby-right {

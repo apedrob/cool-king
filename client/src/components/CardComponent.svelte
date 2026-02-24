@@ -81,6 +81,18 @@
         height: 115.2px;
     }
 
+    @media (max-width: 600px) {
+        .card {
+            /* Shrink full cards to ~82px by ~122px */
+            width: 81.9px;
+            height: 122.8px;
+        }
+        .card.small {
+            width: 61.4px;
+            height: 92px;
+        }
+    }
+
     /* Non-playable cards — pushed down and desaturated */
     /* Trick cards and face-down cards are excluded from dimming */
     .card:not(.playable):not(.face-down):not(.trick-card) {

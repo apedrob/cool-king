@@ -484,6 +484,19 @@
         align-items: center;
         justify-content: center;
         z-index: 1;
+        transition: all 0.3s var(--ease-out);
+    }
+
+    @media (max-width: 600px) {
+        .round-table {
+            width: 95vw;
+            height: max(75vw, 340px);
+            border-width: 2px;
+            box-shadow:
+                0 0 0 1px rgba(0, 0, 0, 0.3),
+                0 0 0 5px rgba(60, 40, 20, 0.35),
+                inset 0 0 40px rgba(0, 0, 0, 0.25);
+        }
     }
 
     /* ─── Opponent Seats ──────────────────────── */
@@ -620,6 +633,33 @@
 
     .your-stat-chip.dim {
         opacity: 0.4;
+    }
+
+    @media (max-width: 600px) {
+        .seat-avatar {
+            width: 48px;
+            height: 48px;
+        }
+        .avatar-letter {
+            font-size: 20px;
+        }
+        .seat-name {
+            font-size: 13px;
+        }
+        .stat-chip {
+            font-size: 11px;
+            padding: 1px 6px;
+        }
+        .seat-card-count {
+            font-size: 11px;
+        }
+        .your-stats {
+            bottom: 6px;
+        }
+        .your-stat-chip {
+            font-size: 13px;
+            padding: 3px 10px;
+        }
     }
 
     /* ─── Turn Banner ─────────────────────────── */

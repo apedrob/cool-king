@@ -87,6 +87,14 @@
         );
         border-bottom: 1px solid rgba(212, 175, 55, 0.15);
         gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+        .hud-bar {
+            padding: 6px 10px;
+            gap: 8px;
+        }
     }
 
     /* Left section: game info chips */

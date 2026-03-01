@@ -101,7 +101,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 24px;
+        padding: 32px;
     }
 
     .char-inner-pass {
@@ -127,7 +127,6 @@
         font-size: 48px;
         color: #5c3a21;
         opacity: 0.8;
-        mix-blend-mode: multiply;
     }
 
     /* flex flex-col items-center justify-center h-full text-center p-6 = 24px */
@@ -137,13 +136,13 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 24px;
+        padding: 32px;
     }
 
     /* scaled up from h-1/2 for larger illustration */
     .illus-half {
         width: 100%;
-        height: 60%;
+        height: 70%;
         margin-bottom: 8px;
     }
 
@@ -158,7 +157,6 @@
             rgba(139, 90, 43, 0.2),
             rgba(62, 39, 35, 0.4)
         );
-        mix-blend-mode: multiply;
         z-index: 5;
         pointer-events: none;
     }
@@ -172,7 +170,6 @@
             rgba(15, 59, 76, 0.4),
             rgba(6, 26, 35, 0.6)
         );
-        mix-blend-mode: multiply;
         z-index: 5;
         pointer-events: none;
     }
@@ -186,7 +183,6 @@
             rgba(26, 26, 26, 0.6),
             rgba(0, 0, 0, 0.8)
         );
-        mix-blend-mode: multiply;
         z-index: 5;
         pointer-events: none;
     }
@@ -215,7 +211,6 @@
             transparent,
             rgba(244, 240, 230, 0.4)
         );
-        mix-blend-mode: multiply;
         z-index: 5;
         pointer-events: none;
     }
@@ -236,7 +231,6 @@
         font-size: 36px;
         color: #e0f7fa;
         margin-bottom: 8px;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
     }
 
     /* font-serif text-4xl, text-[#d4af37], drop-shadow, mb-2 */
@@ -245,7 +239,6 @@
         font-size: 36px;
         color: #d4af37;
         margin-bottom: 8px;
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.9));
     }
 
     /* font-serif text-3xl = 30px, text-[#2d1a11], drop-shadow, mb-2 */
@@ -254,6 +247,24 @@
         font-size: 30px;
         color: #2d1a11;
         margin-bottom: 8px;
-        filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.4));
+    }
+
+    @media (min-width: 768px) {
+        .title-pass,
+        .overlay-sailor,
+        .overlay-siren,
+        .overlay-captain,
+        .overlay-foreigner {
+            mix-blend-mode: multiply;
+        }
+        .title-siren {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+        }
+        .title-captain {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.9));
+        }
+        .title-foreigner {
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.4));
+        }
     }
 </style>

@@ -5,6 +5,7 @@
         penIcon,
         compassIcon,
         swordsIcon,
+        flagIcon,
     } from "../lib/icons";
     interface Props {
         playerName: string;
@@ -14,6 +15,7 @@
         oncreate: () => void;
         onNameChange: (name: string) => void;
         onfindgame?: () => void;
+        onhowtoplay?: () => void;
     }
 
     let {
@@ -24,6 +26,7 @@
         oncreate,
         onNameChange,
         onfindgame,
+        onhowtoplay,
     }: Props = $props();
 
     let joinCode = $state("");
@@ -111,6 +114,16 @@
     </div>
 </div>
 
+<!-- How To Play -->
+{#if onhowtoplay}
+    <button
+        class="btn-leather btn-action how-to-play-btn"
+        onclick={onhowtoplay}
+    >
+        <span class="btn-icon">{@html flagIcon}</span> HOW TO PLAY
+    </button>
+{/if}
+
 <style>
     .captain-log {
         padding: 26px;
@@ -196,5 +209,16 @@
         display: flex;
         align-items: center;
         opacity: 0.9;
+    }
+
+    .how-to-play-btn {
+        margin-top: 8px;
+        background: radial-gradient(
+                ellipse at 50% 0%,
+                rgba(212, 175, 55, 0.1) 0%,
+                transparent 70%
+            ),
+            var(--wood-dark);
+        opacity: 0.95;
     }
 </style>

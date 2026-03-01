@@ -13,15 +13,16 @@
     import ManifestPanel from "../components/ManifestPanel.svelte";
     import ReconnectPrompt from "../components/ReconnectPrompt.svelte";
     import MuteButton from "../components/MuteButton.svelte";
-    import RulesModal from "../components/RulesModal.svelte";
+    import HowToPlayModal from "../components/HowToPlayModal.svelte";
     import { audioManager } from "../lib/audioManager";
 
-    let showRulesModal = $state(false);
+    let showHowToPlayModal = $state(false);
     import {
         arrowLeftIcon,
         refreshIcon,
         shipWheelIcon,
         swordsIcon,
+        discordIcon,
     } from "../lib/icons";
     import { onMount } from "svelte";
 
@@ -167,6 +168,7 @@
                 onjoin={joinRoom}
                 oncreate={createRoom}
                 onfindgame={openRoomBrowser}
+                onhowtoplay={() => (showHowToPlayModal = true)}
                 onNameChange={(name) => {
                     playerName = name;
                 }}
@@ -283,15 +285,15 @@
 
     <!-- Footer -->
     <footer class="lobby-footer handwritten">
-        EST. 1702 • PORT: KRAKEN-EU •
-        <a href="/rules" class="footer-link">RULES</a> •
-        <button
-            class="footer-link btn-text"
-            onclick={() => (showRulesModal = true)}>HIERARCHY</button
+        <span class="footer-credits">EST. 1702 • PORT: KRAKEN-EU</span>
+        <a
+            href="https://discord.gg/hqjhJ8Je"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="discord-link"
         >
-        •
-        <a href="/how-to-play" class="footer-link">HOW TO PLAY</a> •
-        <a href="/conduct" class="footer-link">CODE OF CONDUCT</a>
+            <span class="discord-icon">{@html discordIcon}</span> Join the Crew
+        </a>
     </footer>
 
     <div class="smoke-layer"></div>
@@ -307,9 +309,9 @@
 
     <MuteButton />
 
-    <RulesModal
-        show={showRulesModal}
-        onClose={() => (showRulesModal = false)}
+    <HowToPlayModal
+        show={showHowToPlayModal}
+        onClose={() => (showHowToPlayModal = false)}
     />
 </div>
 
@@ -393,30 +395,79 @@
 
     /* Footer */
     .lobby-footer {
-        text-align: center;
-        padding: 12px;
-        font-size: 12px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 16px 24px 24px;
+        font-size: 13px;
         color: var(--parch-dark);
         z-index: 10;
         letter-spacing: 0.1em;
     }
 
-    .footer-link {
+    .discord-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--parch-light);
+        text-decoration: none;
+        font-family: var(--font-flavor);
+        font-size: 13px;
+        font-weight: normal;
+        letter-spacing: 0.1em;
+        padding: 6px 16px;
+        border: 1px solid rgba(88, 101, 242, 0.4);
+        border-radius: 8px;
+        background: linear-gradient(
+            180deg,
+            rgba(88, 101, 242, 0.2) 0%,
+            rgba(88, 101, 242, 0.05) 100%
+        );
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-transform: uppercase;
+        backdrop-filter: blur(4px);
+    }
+
+    .discord-link:hover {
+        color: white;
+        border-color: rgba(88, 101, 242, 0.8);
+        background: linear-gradient(
+            180deg,
+            rgba(88, 101, 242, 0.4) 0%,
+            rgba(88, 101, 242, 0.15) 100%
+        );
+        box-shadow:
+            0 6px 16px rgba(88, 101, 242, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .discord-link:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        background: rgba(88, 101, 242, 0.1);
+    }
+
+    .discord-icon {
+        color: #5865f2;
+        font-size: 1.25em;
+        display: flex;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .footer-credits {
+        font-size: 13px;
+        opacity: 0.7;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
         color: var(--gold-dim);
-        text-decoration: underline;
-        text-underline-offset: 2px;
-    }
-
-    .footer-link:hover {
-        color: var(--gold);
-    }
-
-    .btn-text {
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        cursor: pointer;
     }
 
     /* Error toast */

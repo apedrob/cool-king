@@ -59,13 +59,13 @@
         <!-- Center: flex-1 flex flex-col items-center justify-center opacity-70 mix-blend-multiply -rotate-6 filter:url(#torn-edge) -->
         <div class="center-art">
             {#if cfg.stainType === "wine"}
-                <Wine size={80} strokeWidth={1.5} class="suit-icon-mb" />
+                <Wine size={100} strokeWidth={1.5} class="suit-icon-mb" />
             {:else if cfg.stainType === "water"}
-                <Waves size={80} strokeWidth={1.5} class="suit-icon-mb" />
+                <Waves size={100} strokeWidth={1.5} class="suit-icon-mb" />
             {:else if cfg.stainType === "beer"}
-                <Beer size={80} strokeWidth={1.5} class="suit-icon-mb" />
+                <Beer size={100} strokeWidth={1.5} class="suit-icon-mb" />
             {:else if cfg.stainType === "rum"}
-                <Skull size={80} strokeWidth={1.5} class="suit-icon-mb" />
+                <Skull size={100} strokeWidth={1.5} class="suit-icon-mb" />
             {/if}
             <!-- font-serif text-3xl tracking-widest -->
             <span class="suit-label">{cfg.suitName}</span>
@@ -87,16 +87,15 @@
         align-items: center;
         justify-content: space-between;
         height: 100%;
-        padding: 8px; /* p-2 */
+        padding: 16px;
     }
 
     /* font-serif text-5xl = 48px, opacity-80, mix-blend-multiply */
     .corner-number {
         font-family: serif;
-        font-size: 48px;
+        font-size: 42px;
         font-weight: bold;
         opacity: 0.8;
-        mix-blend-mode: multiply;
         line-height: 1;
     }
 
@@ -118,9 +117,7 @@
         align-items: center;
         justify-content: center;
         opacity: 0.7;
-        mix-blend-mode: multiply;
         transform: rotate(-6deg);
-        filter: url(#torn-edge);
     }
 
     /* mb-2 = 8px */
@@ -131,7 +128,7 @@
     /* font-serif text-3xl = 30px, tracking-widest = 0.1em */
     .suit-label {
         font-family: serif;
-        font-size: 30px;
+        font-size: 36px;
         letter-spacing: 0.1em;
     }
 
@@ -147,5 +144,15 @@
     }
     .suit-rum {
         color: #1a0f00;
+    }
+
+    @media (min-width: 768px) {
+        .corner-number {
+            mix-blend-mode: multiply;
+        }
+        .center-art {
+            mix-blend-mode: multiply;
+            filter: url(#torn-edge);
+        }
     }
 </style>

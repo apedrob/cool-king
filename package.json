@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "bun run scripts/dev.ts",
     "build": "bun run --cwd engine build && bun run --cwd client build",
+    "tunnel": "lt --port 5173",
     "start": "bun run --cwd server start",
     "test": "bun run --cwd engine test",
     "check": "bun run --cwd engine check && bun run --cwd server check && bun run --cwd client check",

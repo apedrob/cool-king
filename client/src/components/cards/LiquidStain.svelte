@@ -57,15 +57,14 @@
 
     /* ── Wine ──────────────────────── */
     .wine-stain {
-        mix-blend-mode: multiply;
         opacity: 0.8;
     }
     .wine-ring {
         position: absolute;
         top: 25%;
         left: 25%;
-        width: 128px;
-        height: 128px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         border: 6px solid #4a0404;
         opacity: 0.7;
@@ -75,8 +74,8 @@
         position: absolute;
         top: 25%;
         left: 25%;
-        width: 128px;
-        height: 128px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         border: 2px solid #6b0f0f;
         opacity: 0.9;
@@ -85,8 +84,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 96px;
-        height: 96px;
+        width: 76px;
+        height: 76px;
         background: #4a0404;
         border-radius: 50%;
         filter: blur(12px);
@@ -97,8 +96,8 @@
         position: absolute;
         top: 45%;
         left: 55%;
-        width: 48px;
-        height: 64px;
+        width: 38px;
+        height: 50px;
         background: #3a0202;
         border-radius: 50%;
         filter: blur(4px);
@@ -109,27 +108,25 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 80px;
-        height: 80px;
+        width: 64px;
+        height: 64px;
         background: white;
         border-radius: 50%;
         filter: blur(20px);
         opacity: 0.1;
-        mix-blend-mode: screen;
         transform: translate(-50%, -50%);
     }
 
     /* ── Water ─────────────────────── */
     .water-stain {
-        mix-blend-mode: multiply;
         opacity: 0.6;
     }
     .water-splash-1 {
         position: absolute;
         bottom: 40px;
         right: 40px;
-        width: 160px;
-        height: 160px;
+        width: 128px;
+        height: 128px;
         background: #1e3a5f;
         border-radius: 50%;
         filter: blur(20px);
@@ -139,8 +136,8 @@
         position: absolute;
         top: 80px;
         left: 40px;
-        width: 80px;
-        height: 80px;
+        width: 64px;
+        height: 64px;
         background: #2a4b7c;
         border-radius: 50%;
         filter: blur(16px);
@@ -150,30 +147,27 @@
         position: absolute;
         bottom: 20px;
         right: 20px;
-        width: 192px;
-        height: 192px;
+        width: 154px;
+        height: 154px;
         background: white;
         border-radius: 50%;
         filter: blur(12px);
         opacity: 0.2;
-        mix-blend-mode: overlay;
     }
     .water-salt-2 {
         position: absolute;
         bottom: 40px;
         right: 40px;
-        width: 128px;
-        height: 128px;
+        width: 100px;
+        height: 100px;
         border: 4px dashed white;
         border-radius: 50%;
         filter: blur(4px);
         opacity: 0.3;
-        mix-blend-mode: overlay;
     }
 
     /* ── Beer ──────────────────────── */
     .beer-stain {
-        mix-blend-mode: multiply;
         opacity: 0.7;
     }
     .beer-gradient {
@@ -190,75 +184,87 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 33%;
+        height: 25%;
         background: white;
         filter: blur(12px);
         opacity: 0.3;
-        mix-blend-mode: overlay;
     }
     .beer-drop {
         position: absolute;
-        top: 40px;
+        top: 50%;
         left: 50%;
-        width: 96px;
-        height: 96px;
-        background: #e6c229;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(
+            circle,
+            rgba(230, 194, 41, 0.4) 0%,
+            transparent 70%
+        );
         border-radius: 50%;
         filter: blur(16px);
-        opacity: 0.6;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
+        opacity: 0.8;
     }
     .beer-grain {
         position: absolute;
         inset: 0;
-        opacity: 0.1;
+        opacity: 0.3;
         background-image: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            #000 10px,
-            #000 20px
+            -45deg,
+            rgba(212, 175, 55, 0.05),
+            rgba(212, 175, 55, 0.05) 15px,
+            rgba(212, 175, 55, 0.2) 15px,
+            rgba(212, 175, 55, 0.2) 30px
         );
+        mix-blend-mode: multiply;
     }
 
     /* ── Rum ───────────────────────── */
     .rum-stain {
-        mix-blend-mode: multiply;
         opacity: 0.9;
     }
     .rum-gradient {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, #1a0f00, transparent);
-        opacity: 0.8;
+        background: radial-gradient(
+            circle at 50% 50%,
+            rgba(26, 15, 0, 0.5) 0%,
+            rgba(13, 7, 0, 0.2) 45%,
+            transparent 70%
+        );
     }
     .rum-pool {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 50%;
-        background: #0d0700;
-        filter: blur(20px);
-        opacity: 0.9;
-    }
-    .rum-char {
-        position: absolute;
-        inset: 0;
-        border: 12px solid #0a0500;
-        opacity: 0.8;
-        filter: blur(4px);
-    }
-    .rum-spot {
-        position: absolute;
         top: 50%;
         left: 50%;
-        width: 128px;
-        height: 128px;
-        background: #2b1600;
+        width: 140px;
+        height: 140px;
+        background: rgba(10, 5, 0, 0.4);
         border-radius: 50%;
-        filter: blur(12px);
-        opacity: 0.8;
+        filter: blur(24px);
         transform: translate(-50%, -50%);
+    }
+    .rum-char {
+        display: none;
+    }
+    .rum-spot {
+        display: none;
+    }
+
+    @media (min-width: 768px) {
+        .wine-stain,
+        .water-stain,
+        .beer-stain,
+        .rum-stain {
+            mix-blend-mode: multiply;
+        }
+        .wine-highlight {
+            mix-blend-mode: screen;
+        }
+        .water-salt-1,
+        .water-salt-2,
+        .beer-foam {
+            mix-blend-mode: overlay;
+        }
     }
 </style>

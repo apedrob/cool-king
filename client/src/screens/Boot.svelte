@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { skullIcon } from "../lib/icons";
     import { socketManager } from "../socket.js";
     import {
         connectionStatus,
@@ -10,22 +9,72 @@
     } from "../stores/socket";
 
     let loadProgress = $state(0);
-    let statusText = $state("Connecting to port...");
+    let statusText = $state("Loading heavy assets...");
+
+    const preloadAssets = async () => {
+        const assets = [
+            "/textures/wood-table-bg.svg",
+            "/textures/parchment-light.svg",
+            "/textures/parchment-dark.svg",
+            "/audio/playing.m4a",
+            "/audio/lobby.mp3",
+            "/audio/bidding.mp3",
+            "/audio/scoring.mp3",
+        ];
+
+        let loaded = 0;
+        const total = assets.length;
+
+        const promises = assets.map((src) => {
+            return new Promise<void>((resolve) => {
+                if (
+                    src.endsWith(".svg") ||
+                    src.endsWith(".jpg") ||
+                    src.endsWith(".png")
+                ) {
+                    const img = new Image();
+                    img.onload = () => {
+                        loaded++;
+                        loadProgress = (loaded / total) * 90;
+                        resolve();
+                    };
+                    img.onerror = () => resolve();
+                    img.src = src;
+                } else if (src.endsWith(".mp3") || src.endsWith(".m4a")) {
+                    const audio = new Audio();
+                    audio.oncanplaythrough = () => {
+                        loaded++;
+                        loadProgress = (loaded / total) * 90;
+                        resolve();
+                    };
+                    audio.onerror = () => resolve();
+                    audio.src = src;
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        // 10s maximum timeout for preloading so users on very slow 3G don't get stuck forever
+        const timeoutPromise = new Promise<void>((resolve) =>
+            setTimeout(resolve, 10000),
+        );
+        await Promise.race([Promise.all(promises), timeoutPromise]);
+    };
 
     onMount(async () => {
         initSocketListeners();
 
-        // Simulate asset loading while connecting
-        const loadInterval = setInterval(() => {
-            loadProgress = Math.min(loadProgress + Math.random() * 15, 90);
-        }, 200);
+        // 1. Preload UI assets based on viewport size
+        await preloadAssets();
 
+        // 2. Connect
+        statusText = "Connecting to port...";
         try {
             await socketManager.connect();
             connectionStatus.set("connected");
             statusText = "Connection established!";
             loadProgress = 100;
-            clearInterval(loadInterval);
 
             // Transition to lobby after brief pause IF we aren't showing a reconnect prompt
             setTimeout(() => {
@@ -41,16 +90,13 @@
         } catch {
             connectionStatus.set("failed");
             statusText = "Failed to reach port — retrying...";
-            clearInterval(loadInterval);
         }
     });
 </script>
 
 <div class="boot-screen wood-bg">
     <div class="boot-content">
-        <h1 class="boot-title title-gold">
-            <span class="title-icon">{@html skullIcon}</span> LAST ROUND
-        </h1>
+        <h1 class="boot-title title-gold">LAST ROUND</h1>
         <p class="boot-subtitle handwritten">By Order of the Captain</p>
 
         <div class="loading-bar-container">

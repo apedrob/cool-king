@@ -14,7 +14,7 @@ interface Track {
 const TRACKS: Record<Exclude<TrackId, 'silence'>, Track> = {
     lobby: { src: '/audio/lobby.mp3', loop: true, volume: 0.35 },
     bidding: { src: '/audio/bidding.mp3', loop: false, volume: 0.30 },
-    playing: { src: '/audio/playing.mp3', loop: true, volume: 0.25 },
+    playing: { src: '/audio/playing.m4a', loop: true, volume: 0.25 },
     scoring: { src: '/audio/scoring.mp3', loop: true, volume: 0.30 },
     gameover: { src: '/audio/gameover.mp3', loop: false, volume: 0.40 },
 };

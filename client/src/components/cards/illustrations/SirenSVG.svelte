@@ -6,14 +6,14 @@
 >
     <defs>
         <radialGradient id="siren-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.8" />
-            <stop offset="50%" stop-color="#00ffcc" stop-opacity="0.3" />
-            <stop offset="100%" stop-color="#00ffcc" stop-opacity="0" />
+            <stop offset="0%" stop-color="#00ffcc" stop-opacity="1" />
+            <stop offset="45%" stop-color="#00e5b4" stop-opacity="0.5" />
+            <stop offset="100%" stop-color="#006e80" stop-opacity="0" />
         </radialGradient>
         <linearGradient id="siren-scales" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0f3b4c" />
-            <stop offset="50%" stop-color="#0a2a36" />
-            <stop offset="100%" stop-color="#061a23" />
+            <stop offset="0%" stop-color="#0d3a56" />
+            <stop offset="50%" stop-color="#082840" />
+            <stop offset="100%" stop-color="#04162a" />
         </linearGradient>
         <filter id="water-ripple" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence
@@ -36,9 +36,9 @@
     <circle
         cx="100"
         cy="100"
-        r="80"
-        fill="#061a23"
-        opacity="0.5"
+        r="90"
+        fill="#071e38"
+        opacity="0.85"
         filter="url(#water-ripple)"
     />
 

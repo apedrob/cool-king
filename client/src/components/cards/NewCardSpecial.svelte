@@ -161,17 +161,20 @@
         pointer-events: none;
     }
 
-    /* siren: from-[#0f3b4c]/40 to-[#061a23]/60 */
+    /* siren: deep ocean — rich indigo-teal, fully covers parchment */
     .overlay-siren {
         position: absolute;
         inset: 0;
         background: linear-gradient(
-            to bottom right,
-            rgba(15, 59, 76, 0.4),
-            rgba(6, 26, 35, 0.6)
+            160deg,
+            #0a1f3d 0%,
+            #0c3252 30%,
+            #0b4060 60%,
+            #062a44 100%
         );
         z-index: 5;
         pointer-events: none;
+        mix-blend-mode: normal;
     }
 
     /* captain: from-[#1a1a1a]/60 to-[#000000]/80 */

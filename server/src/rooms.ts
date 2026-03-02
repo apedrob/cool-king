@@ -440,6 +440,7 @@ export function cleanupRooms(): void {
 // ─── State Sanitization ───────────────────────────
 
 export function sanitizeState(state: GameState, playerId: string): GameState {
+    const isBidding = state.phase === GamePhase.BIDDING;
     return {
         ...state,
         players: state.players.map((p) => ({
@@ -448,6 +449,10 @@ export function sanitizeState(state: GameState, playerId: string): GameState {
                 p.id === playerId
                     ? p.hand
                     : p.hand.map(() => ({ id: "hidden", type: "NUMBERED" as CardType, name: "Hidden" })),
+            // During BIDDING: hide opponents' bid values but expose whether they've committed
+            bid: isBidding && p.id !== playerId ? undefined : p.bid,
+            // hasBid: true = player has locked in a bid (value stays hidden during BIDDING)
+            hasBid: isBidding ? p.bid !== undefined : undefined,
         })),
     };
 }

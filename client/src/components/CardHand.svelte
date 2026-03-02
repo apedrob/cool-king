@@ -199,7 +199,7 @@
     }
 
     .hand-card {
-        margin-left: -20px;
+        margin-left: -30px;
         transition:
             transform 0.25s var(--ease-out),
             z-index 0s;

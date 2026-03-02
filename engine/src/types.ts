@@ -35,6 +35,7 @@ export interface Player {
     tricks: number;
     score: number;
     bid?: number;
+    hasBid?: boolean; // set by server during BIDDING: true = committed a bid (value hidden from opponents)
     isHost: boolean;
     connected: boolean;
     isBot?: boolean;

@@ -32,7 +32,7 @@
         {
             title: "Scoring",
             content:
-                "Hit your bid: +20 pts per trick.\nMiss your bid: -10 pts for each trick you are off.\nBid 0 and succeed for exactly round × 10 points!\nNote: Bonus points for capturing specials are only received when your bid is correct.",
+                "Nail your bid: +20 pts per trick won.\nMiss it: −10 pts per trick off.\nBid 0 and win or lose all — round × 10 pts.\nSpecial bonuses only apply on a correct bid.",
             animType: "scoring",
         },
     ];
@@ -80,7 +80,7 @@
                     {#if steps[currentStep].animType === "bidding"}
                         <div class="anim-bidding">
                             <div class="round-indicator fade-in-out">
-                                Round 1/10
+                                Round 3/10
                             </div>
                             <div class="anim-cards">
                                 <div class="anim-card hidden-card"></div>
@@ -147,7 +147,7 @@
                                 <path
                                     class="sg-path"
                                     style="--d: 1.2s"
-                                    d="M 160 117 L 160 152"
+                                    d="M 160 117 L 160 148"
                                     fill="none"
                                     stroke="#b02a2a"
                                     stroke-width="3.5"
@@ -157,7 +157,7 @@
                                     class="sg-text"
                                     style="--d: 1.2s"
                                     x="175"
-                                    y="139"
+                                    y="136"
                                     fill="#b02a2a"
                                     font-family="var(--font-flavor)"
                                     font-size="13"
@@ -272,12 +272,13 @@
         position: relative;
         width: 90%;
         max-width: 560px;
-        padding: 30px;
+        padding: 40px;
         border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         display: flex;
         flex-direction: column;
-        height: 520px;
+        max-height: 90vh;
+        overflow: hidden;
     }
 
     .close-btn {
@@ -300,17 +301,18 @@
 
     .modal-title {
         text-align: center;
-        font-size: 28px;
-        margin-bottom: 16px;
+        font-size: 32px;
+        margin-bottom: 20px;
         border-bottom: 2px solid rgba(139, 96, 32, 0.3);
-        padding-bottom: 10px;
+        padding-bottom: 12px;
     }
 
     .carousel-container {
         display: flex;
         flex-direction: column;
         flex: 1;
-        height: 420px;
+        min-height: 0;
+        overflow: hidden;
     }
 
     .step-indicator {
@@ -324,7 +326,7 @@
 
     /* Animations Container */
     .animation-container {
-        height: 200px;
+        height: 240px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -503,8 +505,8 @@
     .anim-special-graph-v2 {
         position: relative;
         width: 320px;
-        height: 200px;
-        margin-top: 10px;
+        height: 220px;
+        margin-top: 20px;
     }
 
     .sg-arrows {
@@ -539,17 +541,17 @@
     }
 
     .sg-capt {
-        top: 10px;
+        top: 18px;
         left: 160px;
         color: #8b6b19;
     }
     .sg-sail {
-        top: 85px;
+        top: 93px;
         left: 160px;
         color: #2b1a10;
     }
     .sg-sir {
-        top: 160px;
+        top: 166px;
         left: 160px;
         color: #123e57;
     }
@@ -634,20 +636,21 @@
 
     /* Content block */
     .step-content {
-        flex: none;
+        flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
         text-align: center;
         padding: 0 10px;
-        height: 160px;
+        min-height: 0;
+        overflow-y: auto;
         animation: fade-in 0.3s ease-out;
     }
 
     .step-title {
-        font-size: 22px;
-        margin-bottom: 12px;
+        font-size: 24px;
+        margin-bottom: 16px;
     }
 
     .step-text {
@@ -659,6 +662,7 @@
     }
 
     .carousel-controls {
+        flex-shrink: 0;
         display: flex;
         justify-content: space-between;
         align-items: center;

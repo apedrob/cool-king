@@ -28,6 +28,7 @@ export interface Player {
     tricks: number;
     score: number;
     bid?: number;
+    hasBid?: boolean;
     isHost: boolean;
     connected: boolean;
     isBot?: boolean;

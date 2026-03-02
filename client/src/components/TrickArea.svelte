@@ -32,19 +32,20 @@
 
     /**
      * Compute card position as a percentage offset from center (0,0).
-     * Pulls cards ~35% of the way from center toward the player's seat.
+     * For a poker-like layout, cards are placed slightly in front of the
+     * player's exact seat position.
      */
     function getCardOffset(playerId: string): { x: number; y: number } {
         const seat = seatMap[playerId];
         if (!seat) return { x: 0, y: 0 };
 
-        // seat is in % of table-scene (0-100). Table center is ~50%, 48%.
+        // seat is in % of table-scene (0-100). Table center is ~50%, ~48%.
         // Convert to offset from center.
         const dx = seat.x - 50;
-        const dy = seat.y - 50;
+        const dy = seat.y - 42; // Match the vertical center of seat arc
 
-        // Pull 35% of the way toward the seat, clamped
-        const pull = 0.55;
+        // Pull ~50% of the way from the seat toward the center for a wider play ring
+        const pull = 0.5;
         return {
             x: dx * pull,
             y: dy * pull,
@@ -166,9 +167,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 2px;
         position: absolute;
         transition: all 0.3s var(--ease-out);
+        transform-origin: center center;
+        scale: 0.75;
     }
 
     .trick-card.winner {
@@ -201,6 +204,7 @@
         white-space: nowrap;
     }
 
+    /* To avoid conflicting transforms, define fixed scale */
     .winner-name {
         font-weight: bold;
     }
@@ -208,14 +212,18 @@
     @keyframes card-slam {
         0% {
             opacity: 0;
-            transform: translate(-50%, -50%) translateY(-30px) scale(1.12);
+            margin-top: -30px;
+            scale: 1.12;
         }
         60% {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(3px) scale(0.98);
+            margin-top: 5px;
+            scale: 0.98;
         }
         100% {
             opacity: 1;
+            margin-top: 0px;
+            scale: 1;
         }
     }
 

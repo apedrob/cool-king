@@ -89,12 +89,6 @@
     onpointermove={handlePointerMove}
     onpointerup={handlePointerUp}
 >
-    <!-- Card tray — wooden shelf -->
-    <div class="card-tray">
-        <div class="tray-rivet tray-rivet-left"></div>
-        <div class="tray-rivet tray-rivet-right"></div>
-    </div>
-
     <!-- Card fan -->
     <div class="hand-fan">
         {#each cards as card, i (card.id)}
@@ -142,53 +136,6 @@
 
     .hand-dock.dimmed {
         filter: saturate(0.6) brightness(0.8);
-    }
-
-    /* Card tray — wider wooden shelf with depth */
-    .card-tray {
-        width: 100%;
-        height: 14px;
-        position: relative;
-        z-index: 0;
-
-        background:
-            /* Wood grain texture */
-            repeating-linear-gradient(
-                90deg,
-                rgba(0, 0, 0, 0.06) 0px,
-                rgba(0, 0, 0, 0.06) 2px,
-                transparent 2px,
-                transparent 8px
-            ),
-            /* Wood base */
-                linear-gradient(180deg, #4a3020 0%, #3a2418 40%, #2e1c12 100%);
-
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        border-bottom: 3px solid rgba(0, 0, 0, 0.5);
-        box-shadow:
-            0 6px 16px rgba(0, 0, 0, 0.4),
-            inset 0 2px 4px rgba(255, 255, 255, 0.04);
-    }
-
-    .tray-rivet {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #c0a870, #6a5a38);
-        box-shadow:
-            0 1px 3px rgba(0, 0, 0, 0.6),
-            inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .tray-rivet-left {
-        left: 32px;
-    }
-
-    .tray-rivet-right {
-        right: 32px;
     }
 
     /* Card fan */

@@ -146,7 +146,7 @@
         count: number,
     ): { x: number; y: number; angle: number }[] {
         if (count === 0) return [];
-        // Arc from -80° to +80° — positions are now relative to the poker-table
+        // Arc from -80° to +80° — relative to the poker-table
         const startAngle = -80;
         const endAngle = 80;
         const positions = [];
@@ -154,9 +154,9 @@
             const t = count === 1 ? 0.5 : i / (count - 1);
             const angleDeg = startAngle + t * (endAngle - startAngle);
             const angleRad = (angleDeg * Math.PI) / 180;
-            // Elliptical arc — x radius ~48%, y radius ~42% (relative to table)
-            const x = 50 + Math.sin(angleRad) * 48;
-            const y = 42 - Math.cos(angleRad) * 38;
+            // Elliptical arc — positions are relative to the poker table
+            const x = 50 + Math.sin(angleRad) * 44;
+            const y = 38 - Math.cos(angleRad) * 32;
             positions.push({ x, y, angle: angleDeg });
         }
         return positions;
@@ -173,7 +173,7 @@
             if (pos) map[opp.id] = { x: pos.x, y: pos.y };
         });
         // "You" are at the bottom center
-        if ($playerId) map[$playerId] = { x: 50, y: 85 };
+        if ($playerId) map[$playerId] = { x: 50, y: 82 };
         return map;
     });
 
@@ -192,194 +192,190 @@
         <!-- Atmosphere: vignette -->
         <div class="atmosphere-layer"></div>
 
-        <!-- Layout: HUD → Table Scene → Turn → Hand -->
-        <div class="game-layout">
-            <!-- TOP: HUD bar -->
-            <div class="layout-hud">
-                <Scoreboard
-                    players={$gameState.players}
-                    currentRound={$gameState.currentRound}
-                    maxRounds={$gameState.maxRounds}
-                    currentPlayerId={$playerId}
-                    leadColor={$gameState.leadColor}
-                    trickCards={$gameState.currentTrick.length}
-                />
-            </div>
+        <!-- Layer 3: HUD bar — absolute top -->
+        <div class="hud-bar">
+            <Scoreboard
+                players={$gameState.players}
+                currentRound={$gameState.currentRound}
+                maxRounds={$gameState.maxRounds}
+                currentPlayerId={$playerId}
+                leadColor={$gameState.leadColor}
+                trickCards={$gameState.currentTrick.length}
+                {turnIndicatorText}
+                {isActive}
+                phase={$gameState.phase}
+            />
+        </div>
 
-            <!-- TABLE SCENE: the poker table with all elements positioned relative to it -->
-            <div class="table-scene">
-                <div class="poker-table">
-                    <!-- Trick area (center of table) -->
-                    <TrickArea
-                        trick={$gameState.currentTrick}
-                        players={$gameState.players}
-                        trickWinner={$gameState.phase === "TRICK_RESULT"
-                            ? $gameState.trickWinner
-                            : undefined}
-                        leadColor={$gameState.leadColor}
-                        {seatMap}
-                    />
+        <!-- Layer 1: Poker table — absolute centered, all game elements inside -->
+        <div class="poker-table">
+            <!-- Trick area (center of table) -->
+            <TrickArea
+                trick={$gameState.currentTrick}
+                players={$gameState.players}
+                trickWinner={$gameState.phase === "TRICK_RESULT"
+                    ? $gameState.trickWinner
+                    : undefined}
+                leadColor={$gameState.leadColor}
+                {seatMap}
+            />
 
-                    <!-- Opponent seats along the arc — now INSIDE the table -->
-                    {#each $opponents as opp, i (opp.id)}
-                        {@const pos = seatPositions[i]}
-                        {@const originalIndex = $gameState.players.findIndex(
-                            (p) => p.id === opp.id,
-                        )}
-                        {#if pos}
-                            <div
-                                class="table-seat"
-                                class:active-player={opp.id ===
-                                    $gameState.currentPlayer}
-                                class:disconnected={!opp.connected}
-                                style="left: {pos.x}%; top: {pos.y}%;"
+            <!-- Opponent seats along the arc -->
+            {#each $opponents as opp, i (opp.id)}
+                {@const pos = seatPositions[i]}
+                {@const originalIndex = $gameState.players.findIndex(
+                    (p) => p.id === opp.id,
+                )}
+                {#if pos}
+                    <div
+                        class="table-seat"
+                        class:active-player={opp.id ===
+                            $gameState.currentPlayer}
+                        class:disconnected={!opp.connected}
+                        style="left: {pos.x}%; top: {pos.y}%;"
+                    >
+                        <div
+                            class="seat-avatar"
+                            style="background: {seatColors[
+                                originalIndex % seatColors.length
+                            ]}"
+                        >
+                            <span class="avatar-letter"
+                                >{getInitial(opp.name)}</span
                             >
-                                <div
-                                    class="seat-avatar"
-                                    style="background: {seatColors[
-                                        originalIndex % seatColors.length
-                                    ]}"
-                                >
-                                    <span class="avatar-letter"
-                                        >{getInitial(opp.name)}</span
+                            {#if opp.id === $gameState.currentPlayer}
+                                <div class="active-ring"></div>
+                            {/if}
+                            {#if opp.isBot}
+                                <span class="bot-badge">⚙</span>
+                            {/if}
+                            {#if !opp.connected}
+                                <div class="dc-overlay">✕</div>
+                            {/if}
+                        </div>
+                        <span class="seat-name">{opp.name}</span>
+                        <div class="seat-stats">
+                            {#if $gameState.phase === "BIDDING"}
+                                {#if opp.hasBid}
+                                    <div
+                                        class="stat-chip bid-ready has-tooltip"
                                     >
-                                    {#if opp.id === $gameState.currentPlayer}
-                                        <div class="active-ring"></div>
-                                    {/if}
-                                    {#if opp.isBot}
-                                        <span class="bot-badge">⚙</span>
-                                    {/if}
-                                    {#if !opp.connected}
-                                        <div class="dc-overlay">✕</div>
-                                    {/if}
-                                </div>
-                                <span class="seat-name">{opp.name}</span>
-                                <div class="seat-stats">
-                                    {#if $gameState.phase === "BIDDING"}
-                                        {#if opp.hasBid}
-                                            <div
-                                                class="stat-chip bid-ready"
-                                                title="Bid locked in"
-                                            >
-                                                ⚓
-                                            </div>
-                                        {:else}
-                                            <div
-                                                class="stat-chip thinking"
-                                                title="Thinking..."
-                                            >
-                                                <div
-                                                    class="spinning-coin"
-                                                ></div>
-                                            </div>
-                                        {/if}
-                                    {:else if opp.bid !== undefined}
-                                        <div class="stat-chip" title="Bid">
-                                            <div class="coin-icon"></div>
-                                            <span>{opp.bid}</span>
-                                        </div>
-                                        <div
-                                            class="stat-chip"
-                                            title="Tricks Won"
+                                        <span class="chip-tooltip"
+                                            >Bid locked in</span
                                         >
-                                            <div class="cards-icon">
-                                                <div
-                                                    class="card-shape c1"
-                                                ></div>
-                                                <div
-                                                    class="card-shape c2"
-                                                ></div>
-                                            </div>
-                                            <span>{opp.tricks}</span>
-                                        </div>
-                                    {:else}
-                                        <div class="stat-chip dim">···</div>
-                                    {/if}
-                                </div>
-
-                                <!-- Opponent Hand behind avatar -->
-                                {#if opp.hand && opp.hand.length > 0}
-                                    <div class="opponent-hand">
-                                        {#each opp.hand as hCard, hi (hi)}
-                                            {@const mid =
-                                                (opp.hand.length - 1) / 2}
-                                            {@const angle =
-                                                opp.hand.length > 1
-                                                    ? (hi - mid) * 8
-                                                    : 0}
-                                            {@const offsetX = (hi - mid) * 12}
-                                            <div
-                                                class="opp-card-wrapper"
-                                                style="transform: translateX({offsetX}px) rotate({angle}deg); z-index: {hi};"
-                                            >
-                                                <CardComponent
-                                                    card={hCard}
-                                                    faceUp={false}
-                                                    small={true}
-                                                />
-                                            </div>
-                                        {/each}
+                                        ⚓
+                                    </div>
+                                {:else}
+                                    <div class="stat-chip thinking has-tooltip">
+                                        <span class="chip-tooltip"
+                                            >Still thinking...</span
+                                        >
+                                        <div class="spinning-coin"></div>
                                     </div>
                                 {/if}
-                            </div>
-                        {/if}
-                    {/each}
-
-                    <!-- Your own bid / tricks at the bottom of the table -->
-                    {#if $currentPlayer}
-                        <div class="your-stats">
-                            {#if $currentPlayer.bid !== undefined}
-                                <div class="your-stat-chip" title="Bid">
+                            {:else if opp.bid !== undefined}
+                                <div class="stat-chip has-tooltip">
+                                    <span class="chip-tooltip"
+                                        >{opp.name}'s bid</span
+                                    >
                                     <div class="coin-icon"></div>
-                                    <span>{$currentPlayer.bid}</span>
+                                    <span class="stat-num">{opp.bid}</span>
                                 </div>
-                                <div class="your-stat-chip" title="Tricks Won">
+                                <div class="stat-chip has-tooltip">
+                                    <span class="chip-tooltip"
+                                        >Tricks won so far</span
+                                    >
                                     <div class="cards-icon">
                                         <div class="card-shape c1"></div>
                                         <div class="card-shape c2"></div>
                                     </div>
-                                    <span>{$currentPlayer.tricks}</span>
+                                    <span class="stat-num">{opp.tricks}</span>
                                 </div>
                             {:else}
-                                <div class="your-stat-chip dim">···</div>
+                                <div class="stat-chip dim">···</div>
                             {/if}
                         </div>
-                    {/if}
 
-                    <!-- Bid HUD: floats over table center -->
-                    {#if $gameState.phase === "BIDDING"}
-                        <BidPanel
-                            round={$gameState.currentRound}
-                            bidDeadline={$gameState.bidDeadline}
-                            hasBid={$currentPlayer?.bid !== undefined}
-                            myBid={$currentPlayer?.bid}
-                            onbid={handleBid}
-                        />
-                    {/if}
-
-                    <!-- TURN INDICATOR: overlaid at the bottom of the table -->
-                    <div class="layout-turn">
-                        <div
-                            class="turn-banner"
-                            class:active={isActive}
-                            class:waiting={!isActive}
-                        >
-                            <span class="turn-text">{turnIndicatorText}</span>
-                        </div>
+                        <!-- Opponent Hand behind avatar -->
+                        {#if opp.hand && opp.hand.length > 0}
+                            <div class="opponent-hand">
+                                {#each opp.hand as hCard, hi (hi)}
+                                    {@const mid = (opp.hand.length - 1) / 2}
+                                    {@const angle =
+                                        opp.hand.length > 1
+                                            ? (hi - mid) * 8
+                                            : 0}
+                                    {@const offsetX = (hi - mid) * 12}
+                                    <div
+                                        class="opp-card-wrapper"
+                                        style="transform: translateX({offsetX}px) rotate({angle}deg); z-index: {hi};"
+                                    >
+                                        <CardComponent
+                                            card={hCard}
+                                            faceUp={false}
+                                            small={true}
+                                        />
+                                    </div>
+                                {/each}
+                            </div>
+                        {/if}
                     </div>
-                </div>
-            </div>
+                {/if}
+            {/each}
 
-            <div class="layout-hand">
-                <CardHand
-                    cards={$myHand}
-                    playableCardIds={$gameState?.phase === "BIDDING"
-                        ? new Set($myHand.map((c) => c.id))
-                        : $playableCards}
-                    isMyTurn={canInteractWithHand}
-                    onplay={handlePlayCard}
+            <!-- Bid HUD: floats over table center -->
+            {#if $gameState.phase === "BIDDING"}
+                <BidPanel
+                    round={$gameState.currentRound}
+                    bidDeadline={$gameState.bidDeadline}
+                    hasBid={$currentPlayer?.bid !== undefined}
+                    myBid={$currentPlayer?.bid}
+                    onbid={handleBid}
                 />
+            {/if}
+        </div>
+
+        <!-- Your own bid / tricks — between table bottom and hand -->
+        {#if $currentPlayer}
+            <div class="your-stats">
+                {#if $currentPlayer.bid !== undefined}
+                    <div class="your-stat-chip has-tooltip">
+                        <span class="chip-tooltip">Your bid for this round</span
+                        >
+                        <div class="coin-icon"></div>
+                        <span class="stat-num">{$currentPlayer.bid}</span>
+                    </div>
+                    <div class="your-stat-chip has-tooltip">
+                        <span class="chip-tooltip">Tricks won so far</span>
+                        <div class="cards-icon">
+                            <div class="card-shape c1"></div>
+                            <div class="card-shape c2"></div>
+                        </div>
+                        <span class="stat-num">{$currentPlayer.tricks}</span>
+                    </div>
+                {:else if $gameState.phase === "BIDDING"}
+                    <div
+                        class="your-stat-chip bidding-wait"
+                        title="Placing bid..."
+                    >
+                        <div class="your-spinning-coin"></div>
+                    </div>
+                {:else}
+                    <div class="your-stat-chip dim">···</div>
+                {/if}
             </div>
+        {/if}
+
+        <!-- Layer 2: Hand dock — fixed to bottom, overlapping table -->
+        <div class="hand-dock-fixed">
+            <CardHand
+                cards={$myHand}
+                playableCardIds={$gameState?.phase === "BIDDING"
+                    ? new Set($myHand.map((c) => c.id))
+                    : $playableCards}
+                isMyTurn={canInteractWithHand}
+                onplay={handlePlayCard}
+            />
         </div>
 
         <!-- Overlays (above layout) -->
@@ -452,19 +448,13 @@
             );
     }
 
-    /* Main flexbox: HUD → table scene → turn → hand */
-    .game-layout {
-        position: relative;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
-    }
-
-    .layout-hud {
-        z-index: 20;
-        flex-shrink: 0;
+    /* ─── Layer 3: HUD bar ─────────────────────── */
+    .hud-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
     }
 
     .in-game-rules-btn {
@@ -494,23 +484,16 @@
         color: var(--gold);
     }
 
-    /* ─── Table Scene ─────────────────────────── */
-    /* Flex container that centers the poker table */
-    .table-scene {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 0;
-        overflow: visible;
-    }
-
-    /* Poker table — all game elements are positioned inside this */
+    /* ─── Layer 1: Poker table ────────────────── */
     .poker-table {
-        position: relative;
+        position: absolute;
+        left: 50%;
+        top: 46%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
 
-        width: min(900px, 95vw);
-        height: min(520px, 55vh);
+        width: min(950px, 92vw);
+        height: min(600px, 68vh);
         border-radius: 120px;
         overflow: visible;
 
@@ -539,7 +522,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1;
         transition: all 0.3s var(--ease-out);
     }
 
@@ -659,6 +641,41 @@
         backdrop-filter: blur(4px);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
         line-height: 1;
+        position: relative;
+    }
+
+    /* Opponent chips: tooltip opens below (they sit on the table, pointing down) */
+    .stat-chip.has-tooltip:hover .chip-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(4px);
+        pointer-events: none;
+    }
+
+    .stat-chip .chip-tooltip {
+        bottom: auto;
+        top: calc(100% + 10px);
+        transform: translateX(-50%) translateY(0px);
+    }
+
+    /* Arrow points up for opponent chips */
+    .stat-chip .chip-tooltip::after {
+        top: auto;
+        bottom: 100%;
+        transform: translateX(-50%) translateY(50%) rotate(45deg);
+        width: 8px;
+        height: 8px;
+        background: rgba(26, 14, 8, 0.92);
+        border-right: none;
+        border-bottom: none;
+        border-left: 1px solid rgba(212, 175, 55, 0.25);
+        border-top: 1px solid rgba(212, 175, 55, 0.25);
+        /* No ::before needed */
+    }
+
+    /* Mono font for all numeric values — scores, bids, tricks, timers */
+    .stat-num {
+        font-family: var(--font-flavor);
+        font-variant-numeric: tabular-nums;
     }
 
     .stat-chip.dim {
@@ -787,15 +804,15 @@
         scale: 0.6;
     }
 
-    /* Your own stats at the bottom of the table */
+    /* Your own stats — positioned in the game-screen, below the table */
     .your-stats {
         position: absolute;
-        bottom: 8%;
+        bottom: 22%;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
         gap: 8px;
-        z-index: 10;
+        z-index: 30;
     }
 
     .your-stat-chip {
@@ -812,6 +829,54 @@
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         white-space: nowrap;
+        position: relative;
+    }
+
+    /* Tooltip */
+    .has-tooltip:hover .chip-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+        pointer-events: none;
+    }
+
+    .chip-tooltip {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%) translateY(0px);
+        white-space: nowrap;
+        font-family: var(--font-flavor);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        color: var(--parch-light);
+        background: rgba(26, 14, 8, 0.92);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        border-radius: 6px;
+        padding: 4px 10px;
+        box-shadow:
+            0 4px 14px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        transition:
+            opacity 0.18s var(--ease-out),
+            transform 0.18s var(--ease-out);
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    /* Downward arrow — single rotated square, no double-element hack */
+    .chip-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%) rotate(45deg);
+        width: 8px;
+        height: 8px;
+        background: rgba(26, 14, 8, 0.92);
+        border-right: 1px solid rgba(212, 175, 55, 0.25);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
 
     .your-stat-chip.dim {
@@ -819,7 +884,36 @@
         justify-content: center;
     }
 
+    .your-stat-chip.bidding-wait {
+        justify-content: center;
+        border-color: rgba(212, 175, 55, 0.3);
+        background: rgba(212, 175, 55, 0.08);
+    }
+
+    .your-spinning-coin {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle at 35% 35%,
+            #ffd754,
+            #d4af37 50%,
+            #a08520
+        );
+        border: 2px solid #ffeca1;
+        box-shadow:
+            inset 0 0 4px rgba(255, 255, 255, 0.7),
+            0 2px 6px rgba(0, 0, 0, 0.5);
+        animation: coin-flip 1.1s ease-in-out infinite;
+    }
+
     @media (max-width: 600px) {
+        .poker-table {
+            width: 95vw;
+            height: max(75vw, 340px);
+            border-radius: 70px;
+            top: 42%;
+        }
         .seat-avatar {
             width: 48px;
             height: 48px;
@@ -834,9 +928,7 @@
             font-size: 11px;
             padding: 1px 6px;
         }
-        .seat-card-count {
-            font-size: 11px;
-        }
+
         .your-stats {
             bottom: 6px;
         }
@@ -845,95 +937,14 @@
             padding: 3px 10px;
         }
     }
-
-    /* ─── Turn Banner (absolute overlay at bottom of table-scene) ── */
-    .layout-turn {
-        position: absolute;
-        bottom: 0;
+    /* ─── Layer 2: Hand dock ──────────────────── */
+    .hand-dock-fixed {
+        position: fixed;
+        bottom: -10px;
         left: 0;
         right: 0;
-        z-index: 20;
-        display: flex;
-        justify-content: center;
-        padding: 4px 16px;
-        pointer-events: none;
-    }
-
-    .layout-hand {
-        z-index: 15;
-        flex-shrink: 0;
-    }
-
-    .turn-banner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 420px;
-        padding: 8px 24px;
-        border-radius: 24px;
-        transition: all 0.4s var(--ease-out);
-    }
-
-    .turn-banner.active {
-        background: linear-gradient(
-            135deg,
-            rgba(212, 175, 55, 0.2) 0%,
-            rgba(245, 166, 35, 0.15) 50%,
-            rgba(212, 175, 55, 0.2) 100%
-        );
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        box-shadow:
-            0 0 24px rgba(212, 175, 55, 0.2),
-            0 2px 8px rgba(0, 0, 0, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        animation: banner-pulse 2.5s ease-in-out infinite;
-    }
-
-    .turn-banner.waiting {
-        background: linear-gradient(
-            135deg,
-            rgba(42, 26, 16, 0.6) 0%,
-            rgba(74, 48, 32, 0.5) 100%
-        );
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .turn-text {
-        font-family: var(--font-ui);
-        font-size: 18px;
-        letter-spacing: 0.06em;
-        white-space: nowrap;
-    }
-
-    .turn-banner.active .turn-text {
-        color: var(--gold-glow);
-        text-shadow:
-            0 0 16px rgba(212, 175, 55, 0.6),
-            0 0 40px rgba(212, 175, 55, 0.2);
-    }
-
-    .turn-banner.waiting .turn-text {
-        color: var(--parch-dark);
-        text-shadow: none;
-        font-size: 15px;
-    }
-
-    @keyframes banner-pulse {
-        0%,
-        100% {
-            box-shadow:
-                0 0 16px rgba(212, 175, 55, 0.15),
-                0 2px 8px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-        50% {
-            box-shadow:
-                0 0 32px rgba(212, 175, 55, 0.3),
-                0 2px 12px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
-        }
+        z-index: 40;
+        pointer-events: auto;
     }
 
     @keyframes ring-pulse {

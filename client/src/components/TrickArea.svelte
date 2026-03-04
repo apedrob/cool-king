@@ -42,10 +42,10 @@
         // seat is in % of table-scene (0-100). Table center is ~50%, ~48%.
         // Convert to offset from center.
         const dx = seat.x - 50;
-        const dy = seat.y - 42; // Match the vertical center of seat arc
+        const dy = seat.y - 38;
 
-        // Pull ~50% of the way from the seat toward the center for a wider play ring
-        const pull = 0.5;
+        // Pull only 35% toward center — cards stay closer to their player's seat
+        const pull = 0.35;
         return {
             x: dx * pull,
             y: dy * pull,
@@ -69,21 +69,18 @@
         <div class="trick-cards">
             {#each trick as play, i (play.playerId)}
                 {@const offset = getCardOffset(play.playerId)}
-                {@const rotation = offset.x * 0.3}
                 <div
                     class="trick-card"
                     class:winner={trickWinner === play.playerId}
                     style="
                         left: calc(50% + {offset.x}%);
                         top: calc(50% + {offset.y}%);
-                        transform: translate(-50%, -50%) rotate({rotation}deg);
+                        transform: translate(-50%, -50%);
                         animation: card-slam 0.3s var(--ease-out) both;
                         animation-delay: {i * 0.1}s;
+                        z-index: {i + 1};
                     "
                 >
-                    <span class="card-label"
-                        >{getPlayerName(play.playerId)}</span
-                    >
                     <CardComponent
                         card={play.card}
                         faceUp={true}
@@ -170,8 +167,6 @@
         gap: 2px;
         position: absolute;
         transition: all 0.3s var(--ease-out);
-        transform-origin: center center;
-        scale: 0.75;
     }
 
     .trick-card.winner {
@@ -179,29 +174,24 @@
         animation: winner-spotlight 0.6s var(--ease-out) !important;
     }
 
-    .card-label {
-        font-family: var(--font-flavor);
-        font-size: 12px;
-        color: rgba(232, 213, 168, 0.85);
-        text-align: center;
-        max-width: 90px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-    }
-
     .winner-announce {
         position: absolute;
-        bottom: 8px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         font-family: var(--font-ui);
-        font-size: 16px;
+        font-size: 15px;
         color: var(--gold);
+        background: rgba(0, 0, 0, 0.7);
+        padding: 6px 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.4);
         text-shadow:
             0 0 12px rgba(212, 175, 55, 0.5),
             0 0 32px rgba(212, 175, 55, 0.15);
         animation: fade-in-up 0.3s var(--ease-out);
         white-space: nowrap;
+        z-index: 20;
     }
 
     /* To avoid conflicting transforms, define fixed scale */

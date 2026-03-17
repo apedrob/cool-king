@@ -5,6 +5,7 @@
     interface Props {
         trick: TrickPlay[];
         players: Player[];
+        phase?: string;
         trickWinner?: string;
         leadColor?: CardColor;
         /** Map of playerId → { x: 0-100%, y: 0-100% } seat position in the table-scene */
@@ -14,6 +15,7 @@
     let {
         trick,
         players,
+        phase,
         trickWinner,
         leadColor,
         seatMap = {},
@@ -39,16 +41,18 @@
         const seat = seatMap[playerId];
         if (!seat) return { x: 0, y: 0 };
 
-        // seat is in % of table-scene (0-100). Table center is ~50%, ~48%.
-        // Convert to offset from center.
-        const dx = seat.x - 50;
-        const dy = seat.y - 38;
+        // Clamp out-of-bounds seats so cards stay on the felt.
+        const cx = Math.max(5, Math.min(95, seat.x));
+        const cy = Math.max(15, Math.min(90, seat.y));
 
-        // Pull only 35% toward center — cards stay closer to their player's seat
-        const pull = 0.35;
+        const dx = cx - 50;
+        const dy = cy - 50;
+
+        // xPull=0.65 pushes side cards close to their player's seat edge (~14%/86%).
+        // yPull=0.70 keeps same-side pairs 147px+ apart (> 132px visual card height). ✓
         return {
-            x: dx * pull,
-            y: dy * pull,
+            x: dx * 0.65,
+            y: dy * 0.70,
         };
     }
 </script>
@@ -60,12 +64,12 @@
         </div>
     {/if}
 
-    {#if trick.length === 0}
+    {#if trick.length === 0 && phase === "PLAYING"}
         <div class="empty-state">
             <div class="empty-card-outline"></div>
             <span class="empty-text">Waiting for the first card</span>
         </div>
-    {:else}
+    {:else if trick.length > 0}
         <div class="trick-cards">
             {#each trick as play, i (play.playerId)}
                 {@const offset = getCardOffset(play.playerId)}
@@ -81,12 +85,14 @@
                         z-index: {i + 1};
                     "
                 >
-                    <CardComponent
-                        card={play.card}
-                        faceUp={true}
-                        small={true}
-                        trickCard={true}
-                    />
+                    <div class="card-scaler">
+                        <CardComponent
+                            card={play.card}
+                            faceUp={true}
+                            small={true}
+                            trickCard={true}
+                        />
+                    </div>
                 </div>
             {/each}
         </div>
@@ -158,6 +164,7 @@
     .trick-cards {
         position: absolute;
         inset: 0;
+        z-index: 20;
     }
 
     .trick-card {
@@ -167,6 +174,11 @@
         gap: 2px;
         position: absolute;
         transition: all 0.3s var(--ease-out);
+    }
+
+    .card-scaler {
+        transform-origin: center center;
+        transform: scale(1.15);
     }
 
     .trick-card.winner {

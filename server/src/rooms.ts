@@ -1,5 +1,25 @@
 import { GameState, GamePhase, Player, CardType } from "@cool-king/engine";
 
+// ─── Region Mapping ────────────────────────────────
+
+export const regionToCountry: Record<string, string> = {
+    ams: "NL", arn: "SE", atl: "US", bno: "AR", bom: "IN",
+    bos: "US", cdg: "FR", den: "US", dfw: "US", eddf: "DE",
+    ewr: "US", eze: "AR", fra: "DE", gdl: "MX", gig: "BR",
+    gru: "BR", hkg: "HK", iad: "US", jnb: "ZA", lax: "US",
+    lhr: "GB", mad: "ES", mia: "US", nrt: "JP", ord: "US",
+    otp: "RO", phx: "US", qro: "MX", scl: "CL", sea: "US",
+    sin: "SG", sjc: "US", syd: "AU", waw: "PL", yul: "CA", yyz: "CA",
+};
+
+export const countryToRegion: Record<string, string> = Object.entries(regionToCountry).reduce(
+    (acc, [region, country]) => {
+        if (!acc[country]) acc[country] = region;
+        return acc;
+    },
+    {} as Record<string, string>
+);
+
 // ─── Storage ───────────────────────────────────────
 
 const rooms = new Map<string, GameState>();
@@ -13,8 +33,14 @@ const socketMap = new Map<string, string>();
 function generateRoomCode(): string {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
-    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-    return code;
+    // Generate 4 random characters to append to the 2-letter Country Code
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+
+    // Fallback to "XX" if local dev or unknown region
+    const region = process.env.FLY_REGION || "";
+    const prefix = regionToCountry[region] || "XX";
+
+    return `${prefix}${code}`;
 }
 
 function sanitizeName(name: string): string {

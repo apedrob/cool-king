@@ -99,8 +99,9 @@
 
 <style>
     .hud-bar {
+        position: relative;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
         padding: 8px 16px;
         background: linear-gradient(
@@ -139,11 +140,20 @@
         justify-content: flex-start;
     }
 
-    /* Middle section: Action Tag */
+    /* Middle section: Action Tag — absolutely centered so it's always
+       in the middle of the bar regardless of left/right column widths */
     .hud-turn {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         justify-content: center;
         align-items: center;
+        pointer-events: none;
+    }
+
+    .hud-turn > * {
+        pointer-events: auto;
     }
 
     .turn-banner {
@@ -274,21 +284,21 @@
     /* Right section: score chips */
     .hud-scores {
         display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
+        gap: 4px;
+        flex-wrap: nowrap;
         justify-content: flex-end;
     }
 
     .score-chip {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
+        gap: 4px;
+        padding: 3px 7px;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.06);
         border-radius: 6px;
         font-family: var(--font-flavor);
-        font-size: 11px;
+        font-size: 10px;
         color: var(--parch-med);
         transition: all 0.3s var(--ease-out);
     }
@@ -308,16 +318,14 @@
     }
 
     .chip-name {
-        max-width: 80px;
-        overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .chip-score {
         font-weight: bold;
         font-family: var(--font-ui);
-        font-size: 14px;
+        font-size: 13px;
         color: var(--parch-light);
+        white-space: nowrap;
     }
 </style>

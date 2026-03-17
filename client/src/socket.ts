@@ -14,14 +14,17 @@ class SocketManager {
     /** True when we are actively in a room (prevents stale auto-reconnect) */
     private _inRoom = false;
 
-    connect(): Promise<void> {
+    connect(roomId?: string): Promise<void> {
         return new Promise((resolve, reject) => {
+            const query = roomId ? { roomId } : undefined;
+
             this.socket = io(SERVER_URL, {
                 transports: ["websocket", "polling"],
                 reconnection: true,
                 reconnectionAttempts: 10,
                 reconnectionDelay: 1000,
                 reconnectionDelayMax: 5000,
+                query,
             });
 
             this.socket.on("connect", () => {
@@ -99,6 +102,19 @@ class SocketManager {
     /** Socket ID (changes on reconnect) */
     get socketId(): string | undefined {
         return this.socket?.id;
+    }
+
+    /** Disconnect current socket and reconnect with a specific roomId to trigger fly-replay */
+    reconnectWithRoom(roomId: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (this.socket) {
+                // Remove listeners from the old socket so it doesn't fire __disconnected events
+                this.socket.removeAllListeners();
+                this.socket.disconnect();
+                this.socket = null;
+            }
+            this.connect(roomId).then(resolve).catch(reject);
+        });
     }
 
     /** Stable player ID (set by server, survives reconnects) */

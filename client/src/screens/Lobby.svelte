@@ -68,10 +68,19 @@
         joiningRoom = targetRoomId;
         updateName();
         socketManager.clearSession();
-        socketManager.emit("join-room", {
-            roomId: targetRoomId,
-            playerName: playerName.trim(),
-        });
+        socketManager
+            .reconnectWithRoom(targetRoomId)
+            .then(() => {
+                socketManager.emit("join-room", {
+                    roomId: targetRoomId,
+                    playerName: playerName.trim(),
+                });
+            })
+            .catch(() => {
+                joiningRoom = null;
+                errorMessage.set("Failed to connect to room server");
+                setTimeout(() => errorMessage.set(""), 3000);
+            });
     }
 
     onDestroy(() => {
@@ -127,10 +136,20 @@
         if (!playerName.trim() || !code.trim()) return;
         updateName();
         socketManager.clearSession(); // clear stale session before joining
-        socketManager.emit("join-room", {
-            roomId: code.trim().toUpperCase(),
-            playerName: playerName.trim(),
-        });
+
+        const roomId = code.trim().toUpperCase();
+        socketManager
+            .reconnectWithRoom(roomId)
+            .then(() => {
+                socketManager.emit("join-room", {
+                    roomId,
+                    playerName: playerName.trim(),
+                });
+            })
+            .catch(() => {
+                errorMessage.set("Failed to connect to room server");
+                setTimeout(() => errorMessage.set(""), 3000);
+            });
     }
 
     function addBot(difficulty: string) {
@@ -352,7 +371,7 @@
         color: rgba(212, 175, 55, 0.4);
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        margin-top: 4px;
+        margin-top: 8px;
     }
 
     .lobby-columns {

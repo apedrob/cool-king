@@ -126,13 +126,39 @@
                 $gameState?.phase === "CHOOSING_TIGRESS"),
     );
 
-    // ── Seat positions around the table (computed based on opponent count) ──
-    // Seats are placed in a semi-circle arc at the top of the table.
-    // With 1 opponent: center top
-    // With 2: left+right
-    // With 3: left+center+right
-    // With 4: spread evenly
-    // With 5: spread evenly
+    // ── Side-first seat layout ──
+    // Even opponents: all on left/right sides, no top usage.
+    // Odd opponents: sides + 1 at top center, table shifts down.
+    // 'side' controls layout direction: left→rightward, right→leftward, top→centered
+    type SeatSlot = { x: number; y: number; side: "left" | "right" | "top" };
+    const SEAT_SLOTS: Record<number, SeatSlot[]> = {
+        // Counter-clockwise from player: left-bottom → left-top → top → right-top → right-bottom
+        // Side: x=-5/106 (avatar straddles border), top: y=-15 (fan clears avatar before entering felt)
+        1: [{ x: 50, y: -15, side: "top" }],
+        2: [
+            { x: -5, y: 50, side: "left" },
+            { x: 106, y: 50, side: "right" },
+        ],
+        3: [
+            { x: -5, y: 50, side: "left" },
+            { x: 50, y: -15, side: "top" },
+            { x: 106, y: 50, side: "right" },
+        ],
+        4: [
+            { x: -5, y: 75, side: "left" },
+            { x: -5, y: 33, side: "left" },
+            { x: 106, y: 33, side: "right" },
+            { x: 106, y: 75, side: "right" },
+        ],
+        5: [
+            { x: -5, y: 75, side: "left" },
+            { x: -5, y: 33, side: "left" },
+            { x: 50, y: -15, side: "top" },
+            { x: 106, y: 33, side: "right" },
+            { x: 106, y: 75, side: "right" },
+        ],
+    };
+
     const seatColors = [
         "#e06c50",
         "#5b9bd5",
@@ -142,38 +168,28 @@
         "#50b8b4",
     ];
 
-    function getSeatPositions(
-        count: number,
-    ): { x: number; y: number; angle: number }[] {
-        if (count === 0) return [];
-        // Arc from -80° to +80° — relative to the poker-table
-        const startAngle = -80;
-        const endAngle = 80;
-        const positions = [];
-        for (let i = 0; i < count; i++) {
-            const t = count === 1 ? 0.5 : i / (count - 1);
-            const angleDeg = startAngle + t * (endAngle - startAngle);
-            const angleRad = (angleDeg * Math.PI) / 180;
-            // Elliptical arc — positions are relative to the poker table
-            const x = 50 + Math.sin(angleRad) * 44;
-            const y = 38 - Math.cos(angleRad) * 32;
-            positions.push({ x, y, angle: angleDeg });
-        }
-        return positions;
-    }
+    let seatPositions = $derived(SEAT_SLOTS[$opponents.length] ?? []);
 
-    let seatPositions = $derived(getSeatPositions($opponents.length));
+    // Odd opponent count → table shifts down to make room for top player
+    let isOddOpponents = $derived($opponents.length % 2 === 1);
 
-    // Build a seat map for TrickArea: playerId → {x, y} in % of table-scene
+    // Dynamic table sizing
+    let tableDimensions = $derived.by(() => {
+        const n = $opponents.length;
+        if (n <= 2) return { w: "min(750px, 85vw)", h: "min(500px, 60vh)" };
+        if (n <= 4) return { w: "min(900px, 90vw)", h: "min(560px, 62vh)" };
+        return { w: "min(950px, 92vw)", h: "min(580px, 65vh)" };
+    });
+
+    // Build a seat map for TrickArea: playerId → {x, y} in % of table
     let seatMap = $derived.by(() => {
         const map: Record<string, { x: number; y: number }> = {};
-        // Opponents get their arc positions
         $opponents.forEach((opp, i) => {
             const pos = seatPositions[i];
             if (pos) map[opp.id] = { x: pos.x, y: pos.y };
         });
-        // "You" are at the bottom center
-        if ($playerId) map[$playerId] = { x: 50, y: 82 };
+        // "You" at the bottom center
+        if ($playerId) map[$playerId] = { x: 50, y: 95 };
         return map;
     });
 
@@ -207,12 +223,18 @@
             />
         </div>
 
-        <!-- Layer 1: Poker table — absolute centered, all game elements inside -->
-        <div class="poker-table">
+        <!-- Layer 1: Poker table — sides-first layout, dynamic position -->
+        <div
+            class="poker-table"
+            style="width: {tableDimensions.w}; height: {tableDimensions.h}; top: {isOddOpponents
+                ? '48%'
+                : '44%'}"
+        >
             <!-- Trick area (center of table) -->
             <TrickArea
                 trick={$gameState.currentTrick}
                 players={$gameState.players}
+                phase={$gameState.phase}
                 trickWinner={$gameState.phase === "TRICK_RESULT"
                     ? $gameState.trickWinner
                     : undefined}
@@ -220,7 +242,7 @@
                 {seatMap}
             />
 
-            <!-- Opponent seats along the arc -->
+            <!-- Opponent seats — side-aware layout -->
             {#each $opponents as opp, i (opp.id)}
                 {@const pos = seatPositions[i]}
                 {@const originalIndex = $gameState.players.findIndex(
@@ -228,7 +250,7 @@
                 )}
                 {#if pos}
                     <div
-                        class="table-seat"
+                        class="table-seat seat-{pos.side}"
                         class:active-player={opp.id ===
                             $gameState.currentPlayer}
                         class:disconnected={!opp.connected}
@@ -305,7 +327,7 @@
                                         opp.hand.length > 1
                                             ? (hi - mid) * 8
                                             : 0}
-                                    {@const offsetX = (hi - mid) * 12}
+                                    {@const offsetX = (hi - mid) * 18}
                                     <div
                                         class="opp-card-wrapper"
                                         style="transform: translateX({offsetX}px) rotate({angle}deg); z-index: {hi};"
@@ -488,12 +510,11 @@
     .poker-table {
         position: absolute;
         left: 50%;
-        top: 46%;
+        top: 44%;
         transform: translate(-50%, -50%);
         z-index: 2;
 
-        width: min(950px, 92vw);
-        height: min(600px, 68vh);
+        /* Width/height set via inline style (dynamic per player count) */
         border-radius: 120px;
         overflow: visible;
 
@@ -527,10 +548,11 @@
 
     @media (max-width: 600px) {
         .poker-table {
-            width: 95vw;
-            height: max(75vw, 340px);
+            width: 95vw !important;
+            height: max(75vw, 340px) !important;
             border-radius: 70px;
             border-width: 3px;
+            top: 42%;
             box-shadow:
                 0 0 0 1px rgba(0, 0, 0, 0.3),
                 0 0 0 5px rgba(60, 40, 20, 0.35),
@@ -541,13 +563,31 @@
     /* ─── Opponent Seats ──────────────────────── */
     .table-seat {
         position: absolute;
-        transform: translate(-50%, -50%);
         display: flex;
-        flex-direction: column;
         align-items: center;
         gap: 6px;
         z-index: 10;
         transition: all 0.3s var(--ease-out);
+    }
+
+    /* Left side: column, centered at x=-5% — avatar on the rim, name/stats hang outside */
+    .table-seat.seat-left {
+        transform: translate(-50%, -50%);
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Right side: column, centered at x=105% — mirror of left */
+    .table-seat.seat-right {
+        transform: translate(-50%, -50%);
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Top: anchor to top edge, content flows downward */
+    .table-seat.seat-top {
+        transform: translate(-50%, 0);
+        flex-direction: column;
     }
 
     .table-seat.active-player {
@@ -591,11 +631,20 @@
 
     .bot-badge {
         position: absolute;
-        bottom: -2px;
-        right: -4px;
-        font-size: 11px;
+        bottom: -5px;
+        right: -5px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #c8a415;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
         line-height: 1;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+        z-index: 3;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .dc-overlay {
@@ -786,9 +835,6 @@
 
     /* Opponent Physical Hand Styles */
     .opponent-hand {
-        position: absolute;
-        top: -15px;
-        left: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -796,12 +842,37 @@
         z-index: -1;
     }
 
+    /* Left: fan rotated 90° CW, pushed 75px into table from avatar */
+    .seat-left .opponent-hand {
+        position: absolute;
+        top: 32px;
+        left: 50%;
+        transform: translateX(75px) translateY(-50%) rotate(90deg);
+    }
+
+    /* Right: mirror of left */
+    .seat-right .opponent-hand {
+        position: absolute;
+        top: 32px;
+        left: 50%;
+        transform: translateX(-75px) translateY(-50%) rotate(-90deg);
+    }
+
+    /* Top: fan flipped 180° so it opens downward (toward the table).
+       top:70px puts the fan origin 17px above the felt for y=-15% seats,
+       so only the card tips graze the table edge — not the full card body. */
+    .seat-top .opponent-hand {
+        position: absolute;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+    }
+
     .opp-card-wrapper {
         position: absolute;
         transform-origin: bottom center;
         transition: all 0.3s var(--ease-out);
-        /* Scale them down significantly more so they don't cover the screen */
-        scale: 0.6;
+        scale: 0.7;
     }
 
     /* Your own stats — positioned in the game-screen, below the table */
@@ -908,12 +979,6 @@
     }
 
     @media (max-width: 600px) {
-        .poker-table {
-            width: 95vw;
-            height: max(75vw, 340px);
-            border-radius: 70px;
-            top: 42%;
-        }
         .seat-avatar {
             width: 48px;
             height: 48px;
@@ -940,11 +1005,29 @@
     /* ─── Layer 2: Hand dock ──────────────────── */
     .hand-dock-fixed {
         position: fixed;
-        bottom: -10px;
+        bottom: -5px;
         left: 0;
         right: 0;
         z-index: 40;
         pointer-events: auto;
+    }
+
+    /* Dark gradient backdrop to mask the wood plank SVG detail */
+    .hand-dock-fixed::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: linear-gradient(
+            to top,
+            rgba(30, 15, 5, 0.95) 0%,
+            rgba(30, 15, 5, 0.7) 40%,
+            transparent 100%
+        );
+        z-index: -1;
+        pointer-events: none;
     }
 
     @keyframes ring-pulse {

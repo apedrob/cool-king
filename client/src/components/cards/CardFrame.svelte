@@ -49,6 +49,8 @@
         transform: scale(var(--card-scale, 1));
         transform-origin: top center;
         flex-shrink: 0;
+        will-change: transform;
+        backface-visibility: hidden;
 
         /* .parchment class background */
         background-color: #dcb88e;

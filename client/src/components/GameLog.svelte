@@ -54,7 +54,6 @@
 </script>
 
 {#if minimized}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <button class="log-minimized-btn" onclick={() => (minimized = false)}>
         <span class="log-icon">&#9776;</span>
     </button>

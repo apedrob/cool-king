@@ -8,6 +8,8 @@
         roundBonuses?: Record<string, number>;
         round: number;
         scoringDeadline?: number;
+        readyPlayers?: string[];
+        myPlayerId?: string;
         oncontinue: () => void;
     }
 
@@ -17,8 +19,12 @@
         roundBonuses,
         round,
         scoringDeadline,
+        readyPlayers = [],
+        myPlayerId = "",
         oncontinue,
     }: Props = $props();
+
+    let imReady = $derived(readyPlayers.includes(myPlayerId));
 
     let sortedPlayers = $derived(
         [...players].sort((a, b) => b.score - a.score),
@@ -74,7 +80,12 @@
                         player.bid !== undefined &&
                         player.tricks === player.bid}
                     <tr class:best={delta === bestDelta && bestDelta > 0}>
-                        <td class="player-name">{player.name}</td>
+                        <td class="player-name">
+                            {#if readyPlayers.includes(player.id)}
+                                <span class="ready-check">&#10003;</span>
+                            {/if}
+                            {player.name}
+                        </td>
                         <td class="text-center">{player.bid ?? "—"}</td>
                         <td class="text-center">{player.tricks}</td>
                         <td class="text-center bid-result">
@@ -89,7 +100,7 @@
                             {/if}
                         </td>
                         <td class="text-center bonus-value">
-                            {#if roundBonuses && roundBonuses[player.id]}
+                            {#if bidHit && roundBonuses && roundBonuses[player.id]}
                                 +{roundBonuses[player.id]}
                             {:else}
                                 —
@@ -111,8 +122,7 @@
         <!-- Timer: integrated into the footer area -->
         <div class="results-footer">
             <div class="timer-context">
-                <span class="voyage-next">Next voyage in {secondsLeft}s...</span
-                >
+                <span class="voyage-next">{readyPlayers.length}/{players.length} ready &middot; auto in {secondsLeft}s</span>
                 <div class="timer-track">
                     <div
                         class="timer-progress"
@@ -121,8 +131,13 @@
                 </div>
             </div>
 
-            <button class="btn-leather continue-btn" onclick={oncontinue}>
-                CONTINUE
+            <button
+                class="btn-leather continue-btn"
+                class:waiting={imReady}
+                onclick={oncontinue}
+                disabled={imReady}
+            >
+                {imReady ? "WAITING FOR CREW..." : "CONTINUE"}
             </button>
         </div>
     </div>
@@ -277,11 +292,22 @@
         box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
     }
 
+    .ready-check {
+        color: #2a8a3a;
+        font-weight: bold;
+        margin-right: 4px;
+    }
+
     .continue-btn {
         width: 100%;
         font-size: 20px;
         padding: 16px;
         letter-spacing: 0.1em;
+    }
+
+    .continue-btn.waiting {
+        opacity: 0.6;
+        cursor: default;
     }
 
     @keyframes fade-in {

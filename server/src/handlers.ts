@@ -9,6 +9,8 @@ import {
     chooseEscapeOrPirate,
     continueTrick,
     continueRound,
+    markPlayerReady,
+    allPlayersReady,
     isValidPlay,
     chooseBid,
     chooseCard,
@@ -515,22 +517,32 @@ export function registerHandlers(io: Server) {
 
         // ─── Continue Round ─────────────────────────────
         socket.on("continue-round", () => handle(() => {
-            const { room } = requireRoom(socket.id);
+            const { room, playerId } = requireRoom(socket.id);
             if (room.phase !== GamePhase.ROUND_SCORING) throw new Error("Not in ROUND_SCORING phase");
 
-            clearScoringTimer(room.roomId);
+            // Mark this player as ready
+            const readyState = markPlayerReady(room, playerId);
+            readyState.roomId = room.roomId;
+            updateRoom(room.roomId, readyState);
 
-            const newState = continueRound(room);
-            newState.roomId = room.roomId;
-            updateRoom(room.roomId, newState);
-            broadcastState(io, room.roomId);
+            // If all players ready, advance immediately
+            if (allPlayersReady(readyState)) {
+                clearScoringTimer(room.roomId);
 
-            // Next round = bidding phase with timer
-            if (newState.phase === GamePhase.BIDDING) {
-                startBidTimer(io, room.roomId);
-                scheduleBotBids(io, room.roomId);
+                const newState = continueRound(readyState);
+                newState.roomId = room.roomId;
+                updateRoom(room.roomId, newState);
+                broadcastState(io, room.roomId);
+
+                if (newState.phase === GamePhase.BIDDING) {
+                    startBidTimer(io, room.roomId);
+                    scheduleBotBids(io, room.roomId);
+                } else {
+                    scheduleBotTurn(io, room.roomId);
+                }
             } else {
-                scheduleBotTurn(io, room.roomId);
+                // Not all ready yet — broadcast updated ready state
+                broadcastState(io, room.roomId);
             }
         }));
 

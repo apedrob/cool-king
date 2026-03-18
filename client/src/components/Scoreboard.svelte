@@ -1,12 +1,11 @@
 <script lang="ts">
-    import type { Player, CardColor } from "@cool-king/engine";
+    import type { Player } from "@cool-king/engine";
 
     interface Props {
         players: Player[];
         currentRound: number;
         maxRounds: number;
         currentPlayerId: string | null;
-        leadColor?: CardColor;
         trickCards: number;
         turnIndicatorText: string;
         isActive: boolean;
@@ -18,7 +17,6 @@
         currentRound,
         maxRounds,
         currentPlayerId,
-        leadColor,
         trickCards: _trickCards,
         turnIndicatorText,
         isActive,
@@ -30,19 +28,7 @@
     );
     let leadScore = $derived(sortedPlayers[0]?.score ?? 0);
 
-    const suitSymbols: Record<string, string> = {
-        BLACK: "♠",
-        RED: "♥",
-        BLUE: "♦",
-        YELLOW: "★",
-    };
 
-    const suitColors: Record<string, string> = {
-        BLACK: "#2a2a2a",
-        RED: "#c44040",
-        BLUE: "#4a7abf",
-        YELLOW: "#d4a020",
-    };
 </script>
 
 <div class="hud-bar">
@@ -55,14 +41,6 @@
             >
         </div>
 
-        {#if leadColor}
-            <div class="hud-chip">
-                <span class="hud-label">Lead</span>
-                <span class="hud-value" style="color: {suitColors[leadColor]}">
-                    {suitSymbols[leadColor]}
-                </span>
-            </div>
-        {/if}
     </div>
 
     <!-- Middle: Turn Indicator (Action Tag) -->

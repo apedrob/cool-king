@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TrickPlay, Player, CardColor } from "@cool-king/engine";
+    import type { TrickPlay, Player } from "@cool-king/engine";
     import CardComponent from "./CardComponent.svelte";
 
     interface Props {
@@ -7,7 +7,6 @@
         players: Player[];
         phase?: string;
         trickWinner?: string;
-        leadColor?: CardColor;
         /** Map of playerId → { x: 0-100%, y: 0-100% } seat position in the table-scene */
         seatMap?: Record<string, { x: number; y: number }>;
     }
@@ -17,7 +16,6 @@
         players,
         phase,
         trickWinner,
-        leadColor,
         seatMap = {},
     }: Props = $props();
 
@@ -25,45 +23,31 @@
         return players.find((p) => p.id === playerId)?.name ?? "Unknown";
     }
 
-    const suitSymbols: Record<string, string> = {
-        BLACK: "♠",
-        RED: "♥",
-        BLUE: "♦",
-        YELLOW: "★",
-    };
-
     /**
      * Compute card position as a percentage offset from center (0,0).
-     * For a poker-like layout, cards are placed slightly in front of the
-     * player's exact seat position.
+     * Uses a normalized direction vector from center toward the player's seat,
+     * placing every card at the same proportional distance — matching the
+     * static layout of SEAT_SLOTS.
      */
     function getCardOffset(playerId: string): { x: number; y: number } {
         const seat = seatMap[playerId];
         if (!seat) return { x: 0, y: 0 };
 
-        // Clamp out-of-bounds seats so cards stay on the felt.
-        const cx = Math.max(5, Math.min(95, seat.x));
-        const cy = Math.max(15, Math.min(90, seat.y));
+        const dx = seat.x - 50;
+        const dy = seat.y - 50;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist === 0) return { x: 0, y: 0 };
 
-        const dx = cx - 50;
-        const dy = cy - 50;
-
-        // xPull=0.65 pushes side cards close to their player's seat edge (~14%/86%).
-        // yPull=0.70 keeps same-side pairs 147px+ apart (> 132px visual card height). ✓
+        // Fixed distance from center (in % of the trick-area)
+        const cardDist = 28;
         return {
-            x: dx * 0.65,
-            y: dy * 0.70,
+            x: (dx / dist) * cardDist,
+            y: (dy / dist) * cardDist,
         };
     }
 </script>
 
 <div class="trick-area">
-    {#if leadColor && trick.length > 0}
-        <div class="lead-badge">
-            <span class="lead-suit">{suitSymbols[leadColor]}</span>
-        </div>
-    {/if}
-
     {#if trick.length === 0 && phase === "PLAYING"}
         <div class="empty-state">
             <div class="empty-card-outline"></div>
@@ -73,16 +57,17 @@
         <div class="trick-cards">
             {#each trick as play, i (play.playerId)}
                 {@const offset = getCardOffset(play.playerId)}
+                {@const isWinner = trickWinner === play.playerId}
                 <div
                     class="trick-card"
-                    class:winner={trickWinner === play.playerId}
+                    class:winner={isWinner}
                     style="
                         left: calc(50% + {offset.x}%);
                         top: calc(50% + {offset.y}%);
                         transform: translate(-50%, -50%);
                         animation: card-slam 0.3s var(--ease-out) both;
                         animation-delay: {i * 0.1}s;
-                        z-index: {i + 1};
+                        z-index: {isWinner ? 10 : i + 1};
                     "
                 >
                     <div class="card-scaler">
@@ -181,6 +166,11 @@
         transform: scale(1.15);
     }
 
+    /* Winner card: slightly bigger */
+    .trick-card.winner .card-scaler {
+        transform: scale(1.3);
+    }
+
     .trick-card.winner {
         filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.9));
         animation: winner-spotlight 0.6s var(--ease-out) !important;
@@ -250,4 +240,5 @@
             opacity: 0;
         }
     }
+
 </style>

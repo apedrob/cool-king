@@ -65,6 +65,7 @@ export interface GameState {
     escapeOrPirateCard?: Card;
     bidDeadline?: number;
     scoringDeadline?: number;
+    readyPlayers?: string[];
 }
 /** Maps a card to its image asset path (relative to public/cards/) */
 export declare function getCardAsset(card: Card): string;

@@ -28,6 +28,14 @@ export declare function continueTrick(state: GameState): GameState;
  */
 export declare function continueRound(state: GameState): GameState;
 /**
+ * Mark a player as ready to continue after ROUND_SCORING.
+ */
+export declare function markPlayerReady(state: GameState, playerId: string): GameState;
+/**
+ * Check if all players are ready to continue.
+ */
+export declare function allPlayersReady(state: GameState): boolean;
+/**
  * Choose whether the Tigress card plays as Escape or Pirate.
  */
 export declare function chooseEscapeOrPirate(state: GameState, choice: CardType.ESCAPE | CardType.PIRATE): GameState;

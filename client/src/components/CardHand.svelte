@@ -11,6 +11,39 @@
 
     let { cards, playableCardIds, isMyTurn, onplay }: Props = $props();
 
+    // ─── Sort state ──────────────────────────────────
+    let sorted = $state(false);
+
+    const SUIT_ORDER: Record<string, number> = {
+        RED: 0,
+        BLUE: 1,
+        YELLOW: 2,
+        BLACK: 3,
+    };
+
+    const TYPE_ORDER: Record<string, number> = {
+        NUMBERED: 0,
+        ESCAPE: 1,
+        PIRATE: 2,
+        MERMAID: 3,
+        TIGRESS: 4,
+        SKULL_KING: 5,
+    };
+
+    let sortedCards = $derived.by(() => {
+        const list = [...cards];
+        if (!sorted) return list;
+        return list.sort((a, b) => {
+            const ta = TYPE_ORDER[a.type] ?? 99;
+            const tb = TYPE_ORDER[b.type] ?? 99;
+            if (ta !== tb) return ta - tb;
+            const sa = SUIT_ORDER[a.color ?? ""] ?? 99;
+            const sb = SUIT_ORDER[b.color ?? ""] ?? 99;
+            if (sa !== sb) return sa - sb;
+            return (a.value ?? 0) - (b.value ?? 0);
+        });
+    });
+
     // ─── Drag state ────────────────────────────────
     let draggingCardId = $state<string | null>(null);
     let _dragOffset = $state({ x: 0, y: 0 });
@@ -89,30 +122,38 @@
     onpointermove={handlePointerMove}
     onpointerup={handlePointerUp}
 >
-    <!-- Card fan -->
-    <div class="hand-fan">
-        {#each cards as card, i (card.id)}
-            {@const mid = (cards.length - 1) / 2}
-            {@const angle = cards.length > 1 ? (i - mid) * 7 : 0}
-            {@const offsetY = Math.pow(Math.abs(i - mid), 1.6) * 6}
-            {@const isPlayable = isMyTurn && playableCardIds.has(card.id)}
-            {@const beingDragged = draggingCardId === card.id && isDragging}
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div
-                class="hand-card"
-                class:playable-glow={isPlayable && !beingDragged}
-                class:dragging={beingDragged}
-                style="
-                    transform: rotate({angle}deg) translateY({offsetY}px) {getDragTransform(
-                    card.id,
-                )};
-                    z-index: {beingDragged ? 100 : i};
-                "
-                onpointerdown={(e) => handlePointerDown(e, card.id)}
-            >
-                <CardComponent {card} faceUp={true} playable={isPlayable} />
-            </div>
-        {/each}
+    <div class="hand-row">
+        <!-- Card fan -->
+        <div class="hand-fan">
+            {#each sortedCards as card, i (card.id)}
+                {@const mid = (sortedCards.length - 1) / 2}
+                {@const angle = cards.length > 1 ? (i - mid) * 7 : 0}
+                {@const offsetY = Math.pow(Math.abs(i - mid), 1.6) * 6}
+                {@const isPlayable = isMyTurn && playableCardIds.has(card.id)}
+                {@const beingDragged = draggingCardId === card.id && isDragging}
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div
+                    class="hand-card"
+                    class:playable-glow={isPlayable && !beingDragged}
+                    class:dragging={beingDragged}
+                    style="
+                        transform: rotate({angle}deg) translateY({offsetY}px) {getDragTransform(
+                        card.id,
+                    )};
+                        z-index: {beingDragged ? 100 : i};
+                    "
+                    onpointerdown={(e) => handlePointerDown(e, card.id)}
+                >
+                    <CardComponent {card} faceUp={true} playable={isPlayable} />
+                </div>
+            {/each}
+        </div>
+
+        {#if cards.length > 1}
+            <button class="sort-toggle" class:active={sorted} onclick={() => (sorted = !sorted)} title="Sort by suit">
+                Sort
+            </button>
+        {/if}
     </div>
 
     <!-- Drop zone indicator (visible when dragging) -->
@@ -136,6 +177,45 @@
 
     .hand-dock.dimmed {
         filter: saturate(0.6) brightness(0.8);
+    }
+
+    /* Sort toggle — beside the hand fan */
+    .sort-toggle {
+        flex-shrink: 0;
+        margin-left: 8px;
+        margin-bottom: 14px;
+        font-family: var(--font-flavor);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--parch-dark, #8a7a6a);
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 4px 10px;
+        cursor: pointer;
+        backdrop-filter: blur(4px);
+        transition: all 0.2s var(--ease-out);
+        opacity: 0.5;
+    }
+
+    .sort-toggle:hover {
+        opacity: 1;
+        color: var(--parch-light, #d4c8a8);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .sort-toggle.active {
+        opacity: 0.9;
+        color: var(--gold, #d4af37);
+        border-color: rgba(212, 175, 55, 0.4);
+        background: rgba(212, 175, 55, 0.12);
+    }
+
+    .hand-row {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
     }
 
     /* Card fan */

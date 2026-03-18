@@ -206,6 +206,7 @@ export function continueRound(state) {
         return {
             ...state,
             phase: GamePhase.GAME_OVER,
+            readyPlayers: undefined,
         };
     }
     const nextRound = state.currentRound + 1;
@@ -225,7 +226,30 @@ export function continueRound(state) {
         roundBonuses: undefined, // reset for next round
         escapeOrPirateCard: undefined,
         bidDeadline: Date.now() + 30_000,
+        readyPlayers: undefined,
     };
+}
+/**
+ * Mark a player as ready to continue after ROUND_SCORING.
+ */
+export function markPlayerReady(state, playerId) {
+    if (state.phase !== GamePhase.ROUND_SCORING) {
+        throw new Error("Not in ROUND_SCORING phase");
+    }
+    const readyPlayers = state.readyPlayers ?? [];
+    if (readyPlayers.includes(playerId))
+        return state;
+    return {
+        ...state,
+        readyPlayers: [...readyPlayers, playerId],
+    };
+}
+/**
+ * Check if all players are ready to continue.
+ */
+export function allPlayersReady(state) {
+    const readyPlayers = state.readyPlayers ?? [];
+    return state.players.every(p => readyPlayers.includes(p.id));
 }
 /**
  * Choose whether the Tigress card plays as Escape or Pirate.

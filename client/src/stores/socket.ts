@@ -122,6 +122,16 @@ export function initSocketListeners() {
         gameState.set(state);
         socketManager.inRoom = true;
 
+        // Restore playerId and roomId if not yet set (e.g. after page refresh reconnect)
+        if (state.roomId) {
+            roomId.set(state.roomId);
+        }
+        const savedPlayer = localStorage.getItem("cool-king-playerId");
+        if (savedPlayer && !socketManager.playerId) {
+            socketManager.playerId = savedPlayer;
+            playerId.set(savedPlayer);
+        }
+
         // Auto-navigate to correct screen based on phase
         if (state.phase === "WAITING") {
             currentScreen.set("lobby");

@@ -31,18 +31,16 @@ class SocketManager {
                 console.log("[socket] connected:", this.socket!.id);
                 this._notifyListeners("__connected", undefined);
 
-                // Auto-reconnect only if we were already in a room
-                // (i.e. Socket.IO reconnected after a brief network blip)
-                if (this._inRoom) {
-                    const savedRoom = localStorage.getItem("cool-king-roomId");
-                    const savedPlayer = localStorage.getItem("cool-king-playerId");
-                    if (savedRoom && savedPlayer) {
-                        console.log("[socket] auto-reconnecting to room:", savedRoom);
-                        this.socket!.emit("reconnect-room", {
-                            roomId: savedRoom,
-                            playerId: savedPlayer,
-                        });
-                    }
+                // Auto-reconnect if we have a saved session
+                // (covers both network blips and full page refreshes)
+                const savedRoom = localStorage.getItem("cool-king-roomId");
+                const savedPlayer = localStorage.getItem("cool-king-playerId");
+                if (savedRoom && savedPlayer) {
+                    console.log("[socket] auto-reconnecting to room:", savedRoom);
+                    this.socket!.emit("reconnect-room", {
+                        roomId: savedRoom,
+                        playerId: savedPlayer,
+                    });
                 }
             });
 

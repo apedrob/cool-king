@@ -77,6 +77,7 @@ export interface GameState {
     escapeOrPirateCard?: Card;
     bidDeadline?: number;
     scoringDeadline?: number;
+    readyPlayers?: string[];
 }
 
 // ─── Asset Mapping ───────────────────────────────────────────────────────────

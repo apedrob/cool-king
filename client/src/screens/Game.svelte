@@ -13,7 +13,9 @@
         resetStores,
     } from "../stores/socket";
     import { preloadCardImages } from "../lib/cardAssets";
+
     import { audioManager, type TrackId } from "../lib/audioManager";
+    import { gameLog } from "../stores/gameLog";
     import { onMount } from "svelte";
 
     import CardComponent from "../components/CardComponent.svelte";
@@ -27,6 +29,7 @@
     import ConnectionOverlay from "../components/ConnectionOverlay.svelte";
     import MuteButton from "../components/MuteButton.svelte";
     import HowToPlayModal from "../components/HowToPlayModal.svelte";
+    import GameLog from "../components/GameLog.svelte";
 
     let showHowToPlay = $state(false);
     let trickResultTimer: ReturnType<typeof setTimeout> | null = null;
@@ -35,6 +38,76 @@
         if ($myHand.length > 0) {
             preloadCardImages($myHand);
         }
+        gameLog.clear();
+    });
+
+    // ─── Game Log tracking ──────────────────────
+    let prevTrickLength = 0;
+    let prevPhase = "";
+
+    // Log card plays
+    $effect(() => {
+        const trick = $gameState?.currentTrick ?? [];
+        if (trick.length > prevTrickLength && trick.length > 0) {
+            const lastPlay = trick[trick.length - 1];
+            const player = $gameState!.players.find(
+                (p) => p.id === lastPlay.playerId,
+            );
+            gameLog.add({
+                type: "play",
+                playerName: player?.name ?? "Unknown",
+                card: lastPlay.card,
+                text: "played",
+            });
+        }
+        prevTrickLength = trick.length;
+    });
+
+    // Log phase transitions: trick wins, bid reveals, round events
+    $effect(() => {
+        const phase = $gameState?.phase;
+        if (!phase || phase === prevPhase) return;
+
+        if (phase === "TRICK_RESULT" && prevPhase !== "TRICK_RESULT") {
+            const winner = $gameState!.players.find(
+                (p) => p.id === $gameState!.trickWinner,
+            );
+            const winningPlay = $gameState!.currentTrick.find(
+                (t) => t.playerId === $gameState!.trickWinner,
+            );
+            gameLog.add({
+                type: "trick_won",
+                playerName: winner?.name ?? "Unknown",
+                card: winningPlay?.card,
+                text: winningPlay ? "won the trick with" : "won the trick",
+            });
+        }
+
+        if (phase === "PLAYING" && prevPhase === "BIDDING") {
+            const bidSummary = $gameState!.players
+                .map((p) => `${p.name} ${p.bid ?? "?"}`)
+                .join(", ");
+            gameLog.add({
+                type: "bid_reveal",
+                text: `Bids locked: ${bidSummary}`,
+            });
+        }
+
+        if (phase === "ROUND_SCORING" && prevPhase !== "ROUND_SCORING") {
+            gameLog.add({
+                type: "round_complete",
+                text: `Round ${$gameState!.currentRound} complete`,
+            });
+        }
+
+        if (phase === "BIDDING" && prevPhase === "ROUND_SCORING") {
+            gameLog.add({
+                type: "round_start",
+                text: `Round ${$gameState!.currentRound} begins`,
+            });
+        }
+
+        prevPhase = phase;
     });
 
     // Auto-continue trick results after delay
@@ -44,7 +117,7 @@
             trickResultTimer = setTimeout(() => {
                 socketManager.emit("continue-trick");
                 trickResultTimer = null;
-            }, 2000);
+            }, 3000);
         }
         return () => {
             if (trickResultTimer) clearTimeout(trickResultTimer);
@@ -108,7 +181,7 @@
                 return "Trick complete!";
             case "CHOOSING_TIGRESS":
                 return $isMyTurn
-                    ? "Choose: Escape or Pirate"
+                    ? "Choose: Pass or Sailor"
                     : "Opponent choosing...";
             case "ROUND_SCORING":
                 return "Round complete!";
@@ -141,7 +214,7 @@
         ],
         3: [
             { x: -5, y: 50, side: "left" },
-            { x: 50, y: -15, side: "top" },
+            { x: 50, y: -17, side: "top" },
             { x: 106, y: 50, side: "right" },
         ],
         4: [
@@ -153,7 +226,7 @@
         5: [
             { x: -5, y: 75, side: "left" },
             { x: -5, y: 33, side: "left" },
-            { x: 50, y: -15, side: "top" },
+            { x: 50, y: -17, side: "top" },
             { x: 106, y: 33, side: "right" },
             { x: 106, y: 75, side: "right" },
         ],
@@ -215,7 +288,6 @@
                 currentRound={$gameState.currentRound}
                 maxRounds={$gameState.maxRounds}
                 currentPlayerId={$playerId}
-                leadColor={$gameState.leadColor}
                 trickCards={$gameState.currentTrick.length}
                 {turnIndicatorText}
                 {isActive}
@@ -238,7 +310,6 @@
                 trickWinner={$gameState.phase === "TRICK_RESULT"
                     ? $gameState.trickWinner
                     : undefined}
-                leadColor={$gameState.leadColor}
                 {seatMap}
             />
 
@@ -269,7 +340,7 @@
                                 <div class="active-ring"></div>
                             {/if}
                             {#if opp.isBot}
-                                <span class="bot-badge">⚙</span>
+                                <span class="bot-badge"><svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12"><path d="M8 1a1 1 0 0 1 1 1v1.07A5.001 5.001 0 0 1 13 8v2a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-2 0v-2H7v2a1 1 0 0 1-2 0v-2H4a1 1 0 0 1-1-1V8a5.001 5.001 0 0 1 4-4.93V2a1 1 0 0 1 1-1zM6 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm4 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg></span>
                             {/if}
                             {#if !opp.connected}
                                 <div class="dc-overlay">✕</div>
@@ -303,7 +374,10 @@
                                     <div class="coin-icon"></div>
                                     <span class="stat-num">{opp.bid}</span>
                                 </div>
-                                <div class="stat-chip has-tooltip">
+                                <div
+                                    class="stat-chip has-tooltip"
+                                    class:trick-bump={$gameState?.phase === "TRICK_RESULT" && $gameState?.trickWinner === opp.id}
+                                >
                                     <span class="chip-tooltip"
                                         >Tricks won so far</span
                                     >
@@ -367,7 +441,10 @@
                         <div class="coin-icon"></div>
                         <span class="stat-num">{$currentPlayer.bid}</span>
                     </div>
-                    <div class="your-stat-chip has-tooltip">
+                    <div
+                        class="your-stat-chip has-tooltip"
+                        class:trick-bump={$gameState.phase === "TRICK_RESULT" && $gameState.trickWinner === $playerId}
+                    >
                         <span class="chip-tooltip">Tricks won so far</span>
                         <div class="cards-icon">
                             <div class="card-shape c1"></div>
@@ -402,8 +479,8 @@
 
         <!-- Overlays (above layout) -->
 
-        {#if $gameState.phase === "CHOOSING_TIGRESS"}
-            <TigressChoice isMyChoice={$isMyTurn} onchoose={handleTigress} />
+        {#if $gameState.phase === "CHOOSING_TIGRESS" && $isMyTurn}
+            <TigressChoice onchoose={handleTigress} />
         {/if}
 
         {#if $gameState.phase === "ROUND_SCORING" && $gameState.roundScores}
@@ -413,6 +490,8 @@
                 roundBonuses={$gameState.roundBonuses}
                 round={$gameState.currentRound}
                 scoringDeadline={$gameState.scoringDeadline}
+                readyPlayers={$gameState.readyPlayers ?? []}
+                myPlayerId={$playerId ?? ""}
                 oncontinue={handleContinueRound}
             />
         {/if}
@@ -426,6 +505,7 @@
             />
         {/if}
 
+        <GameLog entries={$gameLog} />
         <ConnectionOverlay />
         <MuteButton />
 
@@ -631,20 +711,20 @@
 
     .bot-badge {
         position: absolute;
-        bottom: -5px;
-        right: -5px;
+        bottom: -4px;
+        right: -4px;
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: #c8a415;
-        border: 2px solid rgba(255, 255, 255, 0.5);
+        background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
+        border: 2px solid rgba(100, 200, 255, 0.5);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        color: rgba(100, 200, 255, 0.9);
         line-height: 1;
         z-index: 3;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), 0 0 6px rgba(100, 200, 255, 0.2);
     }
 
     .dc-overlay {
@@ -863,7 +943,7 @@
        so only the card tips graze the table edge — not the full card body. */
     .seat-top .opponent-hand {
         position: absolute;
-        top: 70px;
+        top: 105px;
         left: 50%;
         transform: translateX(-50%) rotate(180deg);
     }
@@ -1039,6 +1119,37 @@
         50% {
             box-shadow: 0 0 8px 2px rgba(212, 175, 55, 0.4);
             opacity: 0.8;
+        }
+    }
+
+    /* Trick-won bump: jump up + golden glow on the tricks chip */
+    .trick-bump {
+        animation: trick-bump-jump 0.5s var(--ease-out);
+        border-color: rgba(212, 175, 55, 0.7) !important;
+        background: rgba(212, 175, 55, 0.18) !important;
+        box-shadow:
+            0 0 10px rgba(212, 175, 55, 0.5),
+            0 0 24px rgba(212, 175, 55, 0.2) !important;
+    }
+
+    .trick-bump .stat-num,
+    .trick-bump .cards-icon .card-shape {
+        color: var(--gold);
+        border-color: var(--gold);
+    }
+
+    @keyframes trick-bump-jump {
+        0% {
+            transform: translateY(0) scale(1);
+        }
+        30% {
+            transform: translateY(-8px) scale(1.15);
+        }
+        50% {
+            transform: translateY(-6px) scale(1.1);
+        }
+        100% {
+            transform: translateY(0) scale(1);
         }
     }
 </style>

@@ -57,5 +57,6 @@ export function scoreRound(state: GameState): GameState {
         // They will be reset to undefined in `continueRound`.
         escapeOrPirateCard: undefined,
         scoringDeadline: Date.now() + 10_000,
+        readyPlayers: players.filter(p => p.isBot).map(p => p.id),
     };
 }

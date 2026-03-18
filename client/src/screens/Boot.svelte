@@ -5,7 +5,6 @@
         connectionStatus,
         currentScreen,
         initSocketListeners,
-        reconnectPromptVisible,
     } from "../stores/socket";
 
     let loadProgress = $state(0);
@@ -76,16 +75,15 @@
             statusText = "Connection established!";
             loadProgress = 100;
 
-            // Transition to lobby after brief pause IF we aren't showing a reconnect prompt
+            // Transition to lobby after brief pause, unless reconnect already navigated us
             setTimeout(() => {
-                const unsubscribe = reconnectPromptVisible.subscribe(
-                    (visible) => {
-                        if (!visible) {
-                            currentScreen.set("lobby");
-                        }
-                    },
-                );
-                unsubscribe();
+                const unsubScreen = currentScreen.subscribe((screen) => {
+                    // Only go to lobby if we're still on boot (reconnect didn't kick in)
+                    if (screen === "boot") {
+                        currentScreen.set("lobby");
+                    }
+                });
+                unsubScreen();
             }, 600);
         } catch {
             connectionStatus.set("failed");

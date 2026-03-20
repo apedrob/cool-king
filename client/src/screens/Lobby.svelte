@@ -302,17 +302,19 @@
         </div>
     </div>
 
+    <!-- Discord link (top-right) -->
+    <a
+        href="https://discord.gg/nwSyuXy5X5"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="discord-link"
+    >
+        <span class="discord-icon">{@html discordIcon}</span> Join the Crew
+    </a>
+
     <!-- Footer -->
     <footer class="lobby-footer handwritten">
         <span class="footer-credits">EST. 1702 • PORT: KRAKEN-EU</span>
-        <a
-            href="https://discord.gg/hqjhJ8Je"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="discord-link"
-        >
-            <span class="discord-icon">{@html discordIcon}</span> Join the Crew
-        </a>
     </footer>
 
     <div class="smoke-layer"></div>
@@ -428,6 +430,10 @@
     }
 
     .discord-link {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 50;
         display: flex;
         align-items: center;
         gap: 8px;

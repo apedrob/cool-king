@@ -2,10 +2,14 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { registerHandlers } from "./handlers.js";
 import { cleanupRooms, countryToRegion } from "./rooms.js";
+import { injectMeta } from "./seo.js";
 
 const PORT = parseInt(Bun.env.PORT || "3000", 10);
 const isDev = Bun.env.NODE_ENV !== "production";
 const currentRegion = Bun.env.FLY_REGION || "";
+
+const clientPath = import.meta.dir + "/../../client/dist";
+const htmlTemplate = !isDev ? await Bun.file(clientPath + "/index.html").text() : "";
 
 // HTTP server (Bun's Node.js compat layer) — needed for Socket.IO transport
 const httpServer = createServer((req, res) => {
@@ -20,47 +24,38 @@ const httpServer = createServer((req, res) => {
 
     // In production, serve static client files via Bun.file
     if (!isDev) {
-        const clientPath = import.meta.dir + "/../../client/dist";
-        const filePath = url === "/" || !url.includes(".") ? "/index.html" : url;
-        const file = Bun.file(clientPath + filePath);
+        const isFileRequest = url.includes(".");
 
+        if (!isFileRequest) {
+            // SPA route: serve HTML with injected meta tags
+            const html = injectMeta(htmlTemplate, url);
+            res.writeHead(200, {
+                "Content-Type": "text/html",
+                "Cache-Control": "no-cache",
+            });
+            res.end(html);
+            return;
+        }
+
+        // Static file: serve from disk
+        const file = Bun.file(clientPath + url);
         file.exists().then((exists) => {
             if (exists) {
                 file.arrayBuffer().then((buffer) => {
-                    const headers: Record<string, string> = {
-                        "Content-Type": file.type
-                    };
-
-                    // Aggressively cache static assets (JS, CSS, images, fonts, audio)
-                    const isStaticAsset =
-                        url.startsWith('/assets/') ||
-                        url.startsWith('/audio/') ||
-                        url.startsWith('/cards/') ||
-                        url.startsWith('/fonts/') ||
-                        url.startsWith('/textures/') ||
-                        url === '/favicon.svg' ||
-                        url === '/og-image.png';
-
-                    if (isStaticAsset || url.includes('.')) {
-                        headers["Cache-Control"] = "public, max-age=31536000, immutable";
-                    } else {
-                        // Don't cache the HTML entry point
-                        headers["Cache-Control"] = "no-cache";
-                    }
-
-                    res.writeHead(200, headers);
-                    res.end(Buffer.from(buffer));
-                });
-            } else {
-                // SPA fallback
-                const index = Bun.file(clientPath + "/index.html");
-                index.arrayBuffer().then((buffer) => {
                     res.writeHead(200, {
-                        "Content-Type": "text/html",
-                        "Cache-Control": "no-cache"
+                        "Content-Type": file.type,
+                        "Cache-Control": "public, max-age=31536000, immutable",
                     });
                     res.end(Buffer.from(buffer));
                 });
+            } else {
+                // SPA fallback for unknown paths
+                const html = injectMeta(htmlTemplate, url);
+                res.writeHead(200, {
+                    "Content-Type": "text/html",
+                    "Cache-Control": "no-cache",
+                });
+                res.end(html);
             }
         });
         return;

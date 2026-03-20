@@ -7,6 +7,11 @@
     import Rules from "./screens/Rules.svelte";
     import HowToPlay from "./screens/HowToPlay.svelte";
     import VsSkullKing from "./screens/VsSkullKing.svelte";
+    import VsWizard from "./screens/VsWizard.svelte";
+    import VsOhHell from "./screens/VsOhHell.svelte";
+    import Strategy from "./screens/Strategy.svelte";
+    import FAQ from "./screens/FAQ.svelte";
+    import Cards from "./screens/Cards.svelte";
     import SVGFilters from "./components/cards/SVGFilters.svelte";
 
     const path = window.location.pathname;
@@ -19,6 +24,16 @@
         <HowToPlay />
     {:else if path === "/vs/skull-king"}
         <VsSkullKing />
+    {:else if path === "/vs/wizard"}
+        <VsWizard />
+    {:else if path === "/vs/oh-hell"}
+        <VsOhHell />
+    {:else if path === "/strategy"}
+        <Strategy />
+    {:else if path === "/faq"}
+        <FAQ />
+    {:else if path === "/cards"}
+        <Cards />
     {:else if $currentScreen === "boot"}
         <Boot />
     {:else if $currentScreen === "lobby"}

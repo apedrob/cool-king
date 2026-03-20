@@ -3,10 +3,10 @@
 </script>
 
 <svelte:head>
-    <title>Last Round vs Skull King | #1 Free Online Alternative</title>
+    <title>Last Round vs Oh Hell | Free Online Card Game</title>
     <meta
         name="description"
-        content="Comparing Last Round to Skull King. Why Last Round is the best free online alternative to play with friends right in your browser."
+        content="Compare Last Round to Oh Hell. A modern pirate-themed take on classic trick-taking with special cards, bonus scoring, and free instant online play."
     />
 </svelte:head>
 
@@ -15,22 +15,22 @@
 
     <div class="content-container parchment">
         <header class="vs-header">
-            <a href="/" class="back-link">← Back to Port</a>
+            <a href="/" class="back-link">&larr; Back to Port</a>
             <h1 class="title-gold main-heading">
-                LAST ROUND <span class="vs-text">vs</span> SKULL KING
+                LAST ROUND <span class="vs-text">vs</span> OH HELL
             </h1>
             <p class="subtitle handwritten">
-                The #1 Free Online Skull King Alternative
+                Classic Trick-Taking, Evolved
             </p>
         </header>
 
         <section class="comparison-section">
             <p class="intro-text">
-                Looking to play a pirate-themed trick-taking card game online
-                with your friends? If you love the mechanics of <strong
-                    >Skull King</strong
-                >, you'll feel right at home navigating the high seas of
-                <strong>Last Round</strong>.
+                <strong>Oh Hell</strong> (also known as Oh Pshaw, Nomination
+                Whist, or Blob) is the grandfather of bid-and-take card games.
+                <strong>Last Round</strong> builds on that foundation with
+                special cards, bonus scoring, and a pirate theme that makes
+                every round an adventure.
             </p>
 
             <div class="table-wrapper">
@@ -38,38 +38,35 @@
                     <thead>
                         <tr>
                             <th>Feature</th>
-                            <th>Skull King</th>
+                            <th>Oh Hell</th>
                             <th>Last Round</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Platform</strong></td>
-                            <td>Physical / App (Paid)</td>
+                            <td>Physical Deck</td>
                             <td class="highlight">Free Browser Game</td>
                         </tr>
                         <tr>
                             <td><strong>Players</strong></td>
+                            <td>3 - 7</td>
                             <td>2 - 6</td>
-                            <td>2 - 6</td>
                         </tr>
                         <tr>
-                            <td><strong>Downloads Required</strong></td>
-                            <td>Yes (for digital)</td>
-                            <td class="highlight">None (Instant Play)</td>
+                            <td><strong>Special Cards</strong></td>
+                            <td>None (standard 52-card deck)</td>
+                            <td class="highlight">Sailor, Siren, Captain, Pass, The Foreigner</td>
                         </tr>
                         <tr>
-                            <td><strong>Mechanics</strong></td>
-                            <td>Bidding, Pirates, Mermaid</td>
-                            <td>Bidding, Pirates, Siren, Tigress</td>
+                            <td><strong>Scoring Depth</strong></td>
+                            <td>Simple hit/miss</td>
+                            <td class="highlight">Hit/miss + capture bonuses</td>
                         </tr>
                         <tr>
-                            <td
-                                ><strong>Remote Play via Zoom/Discord</strong
-                                ></td
-                            >
-                            <td>Difficult</td>
-                            <td class="highlight">Perfect 🏴‍☠️</td>
+                            <td><strong>Setup Time</strong></td>
+                            <td>Need physical cards + players</td>
+                            <td class="highlight">Share a link, play instantly</td>
                         </tr>
                     </tbody>
                 </table>
@@ -77,34 +74,37 @@
         </section>
 
         <section class="details-section">
-            <h2 class="heading-ink">Why Play Last Round?</h2>
+            <h2 class="heading-ink">Why Upgrade to Last Round?</h2>
 
             <div class="feature-block">
-                <h3>⛵ Instant Access</h3>
+                <h3>Same Satisfying Core</h3>
                 <p>
-                    No creating accounts, no downloading apps, no friction. Just
-                    share a link with your crew and instantly deal the cards.
-                    Perfect for remote teams, Discord groups, and quick game
-                    nights.
+                    If you love the "bid exactly right" tension of Oh Hell,
+                    Last Round delivers that same rush. Predict your tricks,
+                    play smart, and earn bonus points for precision. The
+                    progressive round structure (1 card, then 2, then 3...)
+                    builds beautifully just like Oh Hell.
                 </p>
             </div>
 
             <div class="feature-block">
-                <h3>🃏 Familiar Yet Fresh Mechanics</h3>
+                <h3>Special Cards Add Drama</h3>
                 <p>
-                    If you like the Pirates in Skull King, you'll love the
-                    hierarchy in Last Round. Our deck features the powerful
-                    Siren, the versatile Tigress (who can act as either a Pirate
-                    or an Escape), and the ultimate Captain.
+                    Oh Hell uses a standard deck. Last Round adds five unique
+                    card types — from the lowly Pass flag to the all-powerful
+                    Captain. The Siren can lure the Captain, Sailors beat all
+                    numbered cards, and The Foreigner can act as either. Every
+                    trick becomes a potential upset.
                 </p>
             </div>
 
             <div class="feature-block">
-                <h3>💰 100% Free Forever</h3>
+                <h3>No Cards? No Problem</h3>
                 <p>
-                    There are no microtransactions, ads, or premium tiers. Last
-                    Round is a passion project built to keep crewmates connected
-                    across the globe without paying a toll.
+                    Oh Hell requires everyone in the same room with a physical
+                    deck. Last Round works across continents. Open your browser,
+                    share the room link, and play. No apps, no accounts, no
+                    cost. Just pure trick-taking fun.
                 </p>
             </div>
         </section>
@@ -201,7 +201,6 @@
         font-family: var(--font-ui);
     }
 
-    /* Table Styles */
     .table-wrapper {
         background: rgba(255, 255, 255, 0.4);
         border-radius: 8px;
@@ -247,11 +246,10 @@
     }
 
     .comparison-table .highlight {
-        color: #276938; /* A piratey green */
+        color: #276938;
         font-weight: bold;
     }
 
-    /* Details Section */
     .details-section {
         margin-bottom: 48px;
     }
@@ -282,7 +280,6 @@
         color: var(--ink-faded);
     }
 
-    /* CTA Section */
     .cta-section {
         text-align: center;
         margin-top: 48px;

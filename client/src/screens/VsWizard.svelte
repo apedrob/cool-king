@@ -3,10 +3,10 @@
 </script>
 
 <svelte:head>
-    <title>Last Round vs Skull King | #1 Free Online Alternative</title>
+    <title>Last Round vs Wizard Card Game | Free Online Alternative</title>
     <meta
         name="description"
-        content="Comparing Last Round to Skull King. Why Last Round is the best free online alternative to play with friends right in your browser."
+        content="Compare Last Round to Wizard. Play the best free online trick-taking card game with pirates, special cards, and no downloads required."
     />
 </svelte:head>
 
@@ -15,22 +15,21 @@
 
     <div class="content-container parchment">
         <header class="vs-header">
-            <a href="/" class="back-link">← Back to Port</a>
+            <a href="/" class="back-link">&larr; Back to Port</a>
             <h1 class="title-gold main-heading">
-                LAST ROUND <span class="vs-text">vs</span> SKULL KING
+                LAST ROUND <span class="vs-text">vs</span> WIZARD
             </h1>
             <p class="subtitle handwritten">
-                The #1 Free Online Skull King Alternative
+                A Modern Take on Trick-Taking
             </p>
         </header>
 
         <section class="comparison-section">
             <p class="intro-text">
-                Looking to play a pirate-themed trick-taking card game online
-                with your friends? If you love the mechanics of <strong
-                    >Skull King</strong
-                >, you'll feel right at home navigating the high seas of
-                <strong>Last Round</strong>.
+                Love the bidding and trick-taking of <strong>Wizard</strong>?
+                <strong>Last Round</strong> takes those core mechanics and wraps
+                them in a pirate adventure with special cards, bonus scoring,
+                and instant online play.
             </p>
 
             <div class="table-wrapper">
@@ -38,38 +37,35 @@
                     <thead>
                         <tr>
                             <th>Feature</th>
-                            <th>Skull King</th>
+                            <th>Wizard</th>
                             <th>Last Round</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Platform</strong></td>
-                            <td>Physical / App (Paid)</td>
+                            <td>Physical Cards Only</td>
                             <td class="highlight">Free Browser Game</td>
                         </tr>
                         <tr>
                             <td><strong>Players</strong></td>
+                            <td>3 - 6</td>
                             <td>2 - 6</td>
-                            <td>2 - 6</td>
                         </tr>
                         <tr>
-                            <td><strong>Downloads Required</strong></td>
-                            <td>Yes (for digital)</td>
-                            <td class="highlight">None (Instant Play)</td>
+                            <td><strong>Special Cards</strong></td>
+                            <td>Wizard, Jester</td>
+                            <td class="highlight">Sailor, Siren, Captain, The Foreigner</td>
                         </tr>
                         <tr>
-                            <td><strong>Mechanics</strong></td>
-                            <td>Bidding, Pirates, Mermaid</td>
-                            <td>Bidding, Pirates, Siren, Tigress</td>
+                            <td><strong>Bonus Scoring</strong></td>
+                            <td>No</td>
+                            <td class="highlight">Yes (card capture bonuses)</td>
                         </tr>
                         <tr>
-                            <td
-                                ><strong>Remote Play via Zoom/Discord</strong
-                                ></td
-                            >
-                            <td>Difficult</td>
-                            <td class="highlight">Perfect 🏴‍☠️</td>
+                            <td><strong>Online Multiplayer</strong></td>
+                            <td>Not Available</td>
+                            <td class="highlight">Instant — No Download</td>
                         </tr>
                     </tbody>
                 </table>
@@ -77,34 +73,37 @@
         </section>
 
         <section class="details-section">
-            <h2 class="heading-ink">Why Play Last Round?</h2>
+            <h2 class="heading-ink">Why Switch from Wizard?</h2>
 
             <div class="feature-block">
-                <h3>⛵ Instant Access</h3>
+                <h3>More Depth, Same Core</h3>
                 <p>
-                    No creating accounts, no downloading apps, no friction. Just
-                    share a link with your crew and instantly deal the cards.
-                    Perfect for remote teams, Discord groups, and quick game
-                    nights.
+                    Wizard has Wizards and Jesters. Last Round has five unique
+                    special cards — the Sailor, the Siren, the Captain, the Pass
+                    flag, and The Foreigner — each with rock-paper-scissors
+                    interactions that create deeper strategy and more dramatic
+                    moments.
                 </p>
             </div>
 
             <div class="feature-block">
-                <h3>🃏 Familiar Yet Fresh Mechanics</h3>
+                <h3>Bonus Scoring System</h3>
                 <p>
-                    If you like the Pirates in Skull King, you'll love the
-                    hierarchy in Last Round. Our deck features the powerful
-                    Siren, the versatile Tigress (who can act as either a Pirate
-                    or an Escape), and the ultimate Captain.
+                    In Wizard, you either hit your bid or you don't. In Last
+                    Round, capturing special cards with other specials earns
+                    bonus points. Catching a Sailor with the Captain earns +30
+                    per Sailor. The Siren luring the Captain earns +50.
+                    Precision bidding meets high-risk plays.
                 </p>
             </div>
 
             <div class="feature-block">
-                <h3>💰 100% Free Forever</h3>
+                <h3>Play Anywhere, Instantly</h3>
                 <p>
-                    There are no microtransactions, ads, or premium tiers. Last
-                    Round is a passion project built to keep crewmates connected
-                    across the globe without paying a toll.
+                    No physical deck needed. Share a link, and your crew is
+                    playing in seconds. Perfect for remote game nights, Discord
+                    hangouts, and spontaneous rounds with friends across the
+                    globe.
                 </p>
             </div>
         </section>
@@ -201,7 +200,6 @@
         font-family: var(--font-ui);
     }
 
-    /* Table Styles */
     .table-wrapper {
         background: rgba(255, 255, 255, 0.4);
         border-radius: 8px;
@@ -247,11 +245,10 @@
     }
 
     .comparison-table .highlight {
-        color: #276938; /* A piratey green */
+        color: #276938;
         font-weight: bold;
     }
 
-    /* Details Section */
     .details-section {
         margin-bottom: 48px;
     }
@@ -282,7 +279,6 @@
         color: var(--ink-faded);
     }
 
-    /* CTA Section */
     .cta-section {
         text-align: center;
         margin-top: 48px;

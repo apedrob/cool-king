@@ -68,19 +68,10 @@
         joiningRoom = targetRoomId;
         updateName();
         socketManager.clearSession();
-        socketManager
-            .reconnectWithRoom(targetRoomId)
-            .then(() => {
-                socketManager.emit("join-room", {
-                    roomId: targetRoomId,
-                    playerName: playerName.trim(),
-                });
-            })
-            .catch(() => {
-                joiningRoom = null;
-                errorMessage.set("Failed to connect to room server");
-                setTimeout(() => errorMessage.set(""), 3000);
-            });
+        socketManager.emit("join-room", {
+            roomId: targetRoomId,
+            playerName: playerName.trim(),
+        });
     }
 
     onDestroy(() => {
@@ -136,20 +127,10 @@
         if (!playerName.trim() || !code.trim()) return;
         updateName();
         socketManager.clearSession(); // clear stale session before joining
-
-        const roomId = code.trim().toUpperCase();
-        socketManager
-            .reconnectWithRoom(roomId)
-            .then(() => {
-                socketManager.emit("join-room", {
-                    roomId,
-                    playerName: playerName.trim(),
-                });
-            })
-            .catch(() => {
-                errorMessage.set("Failed to connect to room server");
-                setTimeout(() => errorMessage.set(""), 3000);
-            });
+        socketManager.emit("join-room", {
+            roomId: code.trim().toUpperCase(),
+            playerName: playerName.trim(),
+        });
     }
 
     function addBot(difficulty: string) {

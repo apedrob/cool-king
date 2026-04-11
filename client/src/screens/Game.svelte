@@ -562,10 +562,10 @@
     .in-game-rules-btn {
         position: fixed;
         bottom: 12px;
-        right: 56px; /* Place it to the left of the mute button (36px width + 12px right + 8px gap) */
+        right: 64px;
         z-index: 100;
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         border: 1px solid rgba(255, 255, 255, 0.1);
         background: rgba(0, 0, 0, 0.4);
@@ -584,6 +584,18 @@
         background: rgba(0, 0, 0, 0.6);
         border-color: rgba(212, 175, 55, 0.3);
         color: var(--gold);
+    }
+
+    @media (max-width: 600px) {
+        .in-game-rules-btn {
+            bottom: auto;
+            top: 48px;
+            right: 42px;
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            z-index: 40;
+        }
     }
 
     /* ─── Layer 1: Poker table ────────────────── */
@@ -628,16 +640,17 @@
 
     @media (max-width: 600px) {
         .poker-table {
-            width: 95vw !important;
-            height: max(75vw, 340px) !important;
-            border-radius: 70px;
+            width: 80vw !important;
+            height: min(80vw, 340px) !important;
+            border-radius: 50px;
             border-width: 3px;
-            top: 42%;
+            top: 40%;
             box-shadow:
                 0 0 0 1px rgba(0, 0, 0, 0.3),
-                0 0 0 5px rgba(60, 40, 20, 0.35),
-                inset 0 0 40px rgba(0, 0, 0, 0.25);
+                0 0 0 4px rgba(60, 40, 20, 0.35),
+                inset 0 0 30px rgba(0, 0, 0, 0.25);
         }
+
     }
 
     /* ─── Opponent Seats ──────────────────────── */
@@ -1060,26 +1073,45 @@
 
     @media (max-width: 600px) {
         .seat-avatar {
-            width: 48px;
-            height: 48px;
+            width: 36px;
+            height: 36px;
         }
         .avatar-letter {
-            font-size: 20px;
+            font-size: 15px;
         }
         .seat-name {
-            font-size: 13px;
+            font-size: 10px;
+            max-width: 60px;
+        }
+        .opp-card-wrapper {
+            scale: 0.4;
+        }
+        .opponent-hand {
+            display: none;
         }
         .stat-chip {
-            font-size: 11px;
-            padding: 1px 6px;
+            font-size: 10px;
+            padding: 2px 5px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .table-seat.seat-left {
+            transform: translate(-25%, -50%);
+        }
+        .table-seat.seat-right {
+            transform: translate(-75%, -50%);
         }
 
         .your-stats {
-            bottom: 6px;
+            position: fixed;
+            bottom: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 45;
         }
         .your-stat-chip {
-            font-size: 13px;
-            padding: 3px 10px;
+            font-size: 12px;
+            padding: 3px 8px;
         }
     }
     /* ─── Layer 2: Hand dock ──────────────────── */
@@ -1108,6 +1140,15 @@
         );
         z-index: -1;
         pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+        .hand-dock-fixed {
+            bottom: 40px;
+        }
+        .hand-dock-fixed::before {
+            height: 60px;
+        }
     }
 
     @keyframes ring-pulse {

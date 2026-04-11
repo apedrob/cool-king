@@ -529,4 +529,22 @@ body {
 * {
     scrollbar-width: thin;
     scrollbar-color: #4a2c1b rgba(0, 0, 0, 0.1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Mobile foundations ───────────────────────── */
+@media (max-width: 600px) {
+    .btn-leather {
+        min-height: 44px;
+        padding: 12px 20px;
+    }
+
+    .input-parchment {
+        padding: 13px 14px;
+        font-size: 16px; /* prevents iOS zoom on focus */
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
 }

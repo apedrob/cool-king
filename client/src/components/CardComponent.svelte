@@ -83,13 +83,12 @@
 
     @media (max-width: 600px) {
         .card {
-            /* Shrink full cards to ~82px by ~122px */
-            width: 81.9px;
-            height: 122.8px;
+            width: 72px;
+            height: 108px;
         }
         .card.small {
-            width: 61.4px;
-            height: 92px;
+            width: 54px;
+            height: 81px;
         }
     }
 

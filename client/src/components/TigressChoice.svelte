@@ -135,4 +135,21 @@
             opacity: 0;
         }
     }
+
+    @media (max-width: 600px) {
+        .tigress-options {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tigress-btn {
+            min-width: auto;
+            width: 100%;
+            flex-direction: row;
+            min-height: 44px;
+        }
+        .tigress-illus {
+            width: 48px;
+            height: 48px;
+        }
+    }
 </style>

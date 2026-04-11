@@ -140,6 +140,23 @@ export function initSocketListeners() {
         }
     });
 
+    // ─── Cross-region redirect ─────────────────────
+    socketManager.on("redirect", (data: { roomId: string }) => {
+        const savedName = localStorage.getItem("playerName") || "";
+        socketManager
+            .reconnectWithRoom(data.roomId)
+            .then(() => {
+                socketManager.emit("join-room", {
+                    roomId: data.roomId,
+                    playerName: savedName,
+                });
+            })
+            .catch(() => {
+                errorMessage.set("Failed to connect to room server");
+                setTimeout(() => errorMessage.set(null), 3000);
+            });
+    });
+
     socketManager.on("error", (data: { message: string }) => {
         console.warn("[store] server error:", data.message);
         errorMessage.set(data.message);

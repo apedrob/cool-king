@@ -296,6 +296,14 @@
     <!-- Footer -->
     <footer class="lobby-footer handwritten">
         <span class="footer-credits">EST. 1702 • PORT: KRAKEN-EU</span>
+        <a
+            href="https://discord.gg/nwSyuXy5X5"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="discord-footer-link"
+        >
+            <span class="discord-icon">{@html discordIcon}</span> Join the Crew
+        </a>
     </footer>
 
     <div class="smoke-layer"></div>
@@ -377,13 +385,52 @@
     }
 
     @media (max-width: 800px) {
+        .lobby {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .lobby-header {
+            padding-top: 12px;
+        }
+        .lobby-title {
+            font-size: clamp(32px, 8vw, 48px);
+            margin-bottom: 4px;
+        }
+        .lobby-subtitle {
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .lobby-tagline {
+            font-size: 10px;
+        }
         .lobby-columns {
             flex-direction: column;
             padding: 12px 16px;
+            flex: none;
         }
         .lobby-left {
             flex: none;
             width: 100%;
+        }
+        .lobby-right {
+            flex: none;
+            min-height: auto;
+        }
+        .lobby-footer {
+            padding: 8px 16px 16px;
+            font-size: 11px;
+        }
+        .back-btn,
+        .refresh-btn {
+            min-height: 44px;
+            padding: 10px 14px;
+        }
+        .btn-board {
+            min-height: 44px;
+            padding: 10px 16px;
+        }
+        .discord-link {
+            display: none;
         }
     }
 
@@ -411,10 +458,10 @@
     }
 
     .discord-link {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        z-index: 50;
+        display: none;
+    }
+
+    .discord-footer-link {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -424,40 +471,20 @@
         font-size: 13px;
         font-weight: normal;
         letter-spacing: 0.1em;
-        padding: 6px 16px;
-        border: 1px solid rgba(88, 101, 242, 0.4);
+        padding: 8px 18px;
+        border: 1px solid rgba(88, 101, 242, 0.5);
         border-radius: 8px;
-        background: linear-gradient(
-            180deg,
-            rgba(88, 101, 242, 0.2) 0%,
-            rgba(88, 101, 242, 0.05) 100%
-        );
-        box-shadow:
-            0 2px 8px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        background: rgba(88, 101, 242, 0.25);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         text-transform: uppercase;
-        backdrop-filter: blur(4px);
     }
 
-    .discord-link:hover {
+    .discord-footer-link:hover {
         color: white;
         border-color: rgba(88, 101, 242, 0.8);
-        background: linear-gradient(
-            180deg,
-            rgba(88, 101, 242, 0.4) 0%,
-            rgba(88, 101, 242, 0.15) 100%
-        );
-        box-shadow:
-            0 6px 16px rgba(88, 101, 242, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: rgba(88, 101, 242, 0.4);
         transform: translateY(-2px);
-    }
-
-    .discord-link:active {
-        transform: translateY(1px);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-        background: rgba(88, 101, 242, 0.1);
     }
 
     .discord-icon {

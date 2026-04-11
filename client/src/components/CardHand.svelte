@@ -237,10 +237,16 @@
 
     @media (max-width: 600px) {
         .hand-card {
-            margin-left: -44px; /* Squish cards closer on phone */
+            margin-left: -28px;
         }
         .hand-card:first-child {
             margin-left: 0;
+        }
+        .sort-toggle {
+            display: none;
+        }
+        .hand-fan {
+            padding: 4px 4px 0;
         }
     }
 

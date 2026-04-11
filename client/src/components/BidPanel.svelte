@@ -257,4 +257,21 @@
             opacity: 0.5;
         }
     }
+
+    @media (max-width: 600px) {
+        .bid-coins {
+            max-width: 300px;
+            gap: 8px;
+        }
+        .coin {
+            width: 52px;
+            height: 52px;
+        }
+        .coin-face {
+            font-size: 20px;
+        }
+        .bid-label {
+            font-size: 12px;
+        }
+    }
 </style>

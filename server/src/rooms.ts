@@ -260,12 +260,8 @@ export function markDisconnected(socketId: string): DisconnectResult | null {
     const state = getRoomByPlayerId(playerId);
     if (!state) return null;
 
-    if (state.phase === GamePhase.WAITING) {
-        const newState = leaveRoom(state.roomId, playerId);
-        return newState ? { state: newState, playerId, wasInGame: false } : null;
-    }
-
-    // Mark disconnected (immutable)
+    // Mark disconnected (immutable) — in all phases, keep the player in the room
+    // with a grace period so mobile tab-switches don't kick them out.
     const newState: GameState = {
         ...state,
         players: state.players.map((p) =>
@@ -274,7 +270,7 @@ export function markDisconnected(socketId: string): DisconnectResult | null {
     };
 
     rooms.set(state.roomId, newState);
-    return { state: newState, playerId, wasInGame: true };
+    return { state: newState, playerId, wasInGame: state.phase !== GamePhase.WAITING };
 }
 
 export function reconnectPlayer(

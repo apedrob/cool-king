@@ -268,19 +268,26 @@
 
     @media (max-width: 600px) {
         .game-log {
-            width: 200px;
-            bottom: 52px;
-            left: 8px;
-            max-height: 90px;
+            width: 180px;
+            bottom: auto;
+            top: 48px;
+            left: 4px;
+            max-height: 65px;
+            font-size: 10px;
+            z-index: 40;
         }
 
         .game-log.expanded {
-            max-height: 280px;
+            max-height: 180px;
         }
 
         .log-minimized-btn {
-            bottom: 52px;
-            left: 8px;
+            bottom: auto;
+            top: 48px;
+            left: 4px;
+            width: 28px;
+            height: 28px;
+            z-index: 40;
         }
     }
 </style>

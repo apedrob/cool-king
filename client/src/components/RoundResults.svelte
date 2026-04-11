@@ -322,4 +322,26 @@
             opacity: 0;
         }
     }
+
+    @media (max-width: 600px) {
+        .results-panel {
+            padding: 16px;
+        }
+        .results-title {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .results-table th {
+            font-size: 10px;
+            padding: 6px 4px;
+        }
+        .results-table td {
+            font-size: 12px;
+            padding: 8px 4px;
+        }
+        .player-name {
+            max-width: 80px;
+            font-size: 12px;
+        }
+    }
 </style>

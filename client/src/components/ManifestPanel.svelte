@@ -386,4 +386,29 @@
         justify-content: center;
         gap: 8px;
     }
+
+    @media (max-width: 600px) {
+        .manifest-header {
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .share-btn {
+            min-height: 44px;
+            padding: 10px 16px;
+            width: 100%;
+            justify-content: center;
+            margin-left: 0;
+        }
+        .vessel-code {
+            font-size: 20px;
+        }
+        .bot-buttons {
+            flex-direction: column;
+        }
+        .btn-dark {
+            min-height: 44px;
+            padding: 12px;
+        }
+    }
 </style>

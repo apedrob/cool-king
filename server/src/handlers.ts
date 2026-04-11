@@ -35,6 +35,7 @@ import {
     removeBot,
     getPublicRooms,
     leaveAllRoomsBySocket,
+    countryToRegion,
 } from "./rooms.js";
 
 // ─── Helper: Broadcast sanitized state to all players ──
@@ -280,6 +281,31 @@ function startDisconnectTimer(io: Server, roomId: string, playerId: string) {
     disconnectTimers.set(playerId, timer);
 }
 
+function startLobbyDisconnectTimer(io: Server, roomId: string, playerId: string) {
+    clearDisconnectTimer(playerId);
+
+    const timer = setTimeout(() => {
+        disconnectTimers.delete(playerId);
+        const state = getRoom(roomId);
+        if (!state || state.phase !== GamePhase.WAITING) return;
+
+        const player = state.players.find((p) => p.id === playerId);
+        if (!player || player.connected) return; // already reconnected
+
+        const newState = leaveRoom(roomId, playerId);
+        if (!newState) {
+            // Room was destroyed (last player left)
+            io.in(roomId).emit("room-dissolved");
+            io.in(roomId).socketsLeave(roomId);
+        } else {
+            broadcastState(io, roomId);
+        }
+        broadcastPublicRooms(io);
+    }, 15_000);
+
+    disconnectTimers.set(playerId, timer);
+}
+
 function triggerBotReplacement(io: Server, roomId: string, playerId: string) {
     const state = replaceWithBot(roomId, playerId);
     if (!state) return;
@@ -345,7 +371,21 @@ export function registerHandlers(io: Server) {
             if (!playerName?.trim()) throw new Error("Name is required");
             if (!roomId?.trim()) throw new Error("Room code is required");
 
-            const state = joinRoom(roomId.toUpperCase(), playerName, socket.id);
+            const normalizedId = roomId.toUpperCase();
+
+            // If room doesn't exist locally, check if it belongs to another region
+            if (!getRoom(normalizedId)) {
+                const prefix = normalizedId.substring(0, 2);
+                const targetRegion = countryToRegion[prefix];
+                const currentRegion = process.env.FLY_REGION || "";
+                if (targetRegion && currentRegion && targetRegion !== currentRegion) {
+                    socket.emit("redirect", { roomId: normalizedId });
+                    return;
+                }
+                throw new Error("Room not found");
+            }
+
+            const state = joinRoom(normalizedId, playerName, socket.id);
             const newPlayer = state.players[state.players.length - 1];
             socket.join(state.roomId);
             // Leave lobby browser if they were browsing
@@ -586,9 +626,12 @@ export function registerHandlers(io: Server) {
 
             broadcastState(io, result.state.roomId);
 
-            // Start bot takeover timer for active games
             if (result.wasInGame) {
+                // Active game: bot takeover after 30s
                 startDisconnectTimer(io, result.state.roomId, result.playerId);
+            } else {
+                // WAITING phase: remove after 15s grace period (covers mobile tab-switches)
+                startLobbyDisconnectTimer(io, result.state.roomId, result.playerId);
             }
         });
     });

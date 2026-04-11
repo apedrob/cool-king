@@ -241,4 +241,21 @@
         }
     }
 
+    @media (max-width: 600px) {
+        .trick-cards {
+            transform: scale(0.85);
+            transform-origin: center center;
+        }
+        .card-scaler {
+            transform: scale(0.7);
+        }
+        .trick-card.winner .card-scaler {
+            transform: scale(0.8);
+        }
+        .winner-announce {
+            font-size: 12px;
+            padding: 4px 12px;
+        }
+    }
+
 </style>

@@ -221,4 +221,18 @@
             var(--wood-dark);
         opacity: 0.95;
     }
+
+    @media (max-width: 600px) {
+        .captain-log {
+            padding: 16px;
+        }
+        .join-row {
+            flex-direction: column;
+        }
+        .btn-join {
+            width: 100%;
+            min-height: 44px;
+            justify-content: center;
+        }
+    }
 </style>

@@ -36,11 +36,14 @@ describe("Reconnection", () => {
     });
 
     describe("markDisconnected", () => {
-        test("removes player from WAITING room", () => {
+        test("marks player disconnected in WAITING room (grace period)", () => {
             const result = markDisconnected(hostSocket);
-            // In WAITING phase, player is removed entirely
-            // Room is destroyed if last human leaves
-            expect(result).toBeNull(); // room destroyed since it was only player
+            // In WAITING phase, player is kept but marked disconnected (grace period for mobile tab-switches)
+            expect(result).not.toBeNull();
+            expect(result!.wasInGame).toBe(false);
+            const player = result!.state.players.find((p) => p.id === hostId);
+            expect(player).toBeDefined();
+            expect(player!.connected).toBe(false);
         });
 
         test("marks player disconnected in active game", () => {
@@ -293,20 +296,20 @@ describe("Reconnection", () => {
     });
 
     describe("edge cases", () => {
-        test("reconnect to WAITING room re-adds player", () => {
-            // In WAITING, disconnect removes the player. Reconnect should still work
-            // if the room still exists (other players present)
+        test("reconnect to WAITING room restores player", () => {
+            // In WAITING, disconnect marks player as disconnected (grace period).
+            // Reconnect should restore them.
             const s2 = `socket-p2-${crypto.randomUUID()}`;
             joinRoom(roomId, "Sailor", s2);
 
-            // Host disconnects in WAITING — gets removed
+            // Host disconnects in WAITING — marked disconnected, not removed
             markDisconnected(hostSocket);
 
-            // Try to reconnect — player no longer in room
+            // Reconnect — player is still in room, should succeed
             const newSocket = `socket-new-${crypto.randomUUID()}`;
             const state = reconnectPlayer(roomId, hostId, newSocket);
-            // Player was removed from room, so reconnect should fail
-            expect(state).toBeNull();
+            expect(state).not.toBeNull();
+            expect(state!.players.find((p) => p.id === hostId)!.connected).toBe(true);
         });
 
         test("multiple players disconnect and reconnect independently", () => {

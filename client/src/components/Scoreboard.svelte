@@ -28,7 +28,7 @@
     );
     let leadScore = $derived(sortedPlayers[0]?.score ?? 0);
 
-
+    let scoresOpen = $state(false);
 </script>
 
 <div class="hud-bar">
@@ -40,7 +40,6 @@
                 >{currentRound}<span class="hud-sep">/</span>{maxRounds}</span
             >
         </div>
-
     </div>
 
     <!-- Middle: Turn Indicator (Action Tag) -->
@@ -60,7 +59,7 @@
         {/if}
     </div>
 
-    <!-- Right: Score pills -->
+    <!-- Desktop: Score pills inline -->
     <div class="hud-scores">
         {#each sortedPlayers as player (player.id)}
             <div
@@ -73,7 +72,28 @@
             </div>
         {/each}
     </div>
+
+    <!-- Mobile: toggle button -->
+    <button class="scores-toggle" onclick={() => scoresOpen = !scoresOpen}>
+        {scoresOpen ? '▲' : '▼'}
+    </button>
 </div>
+
+<!-- Mobile: collapsible scores dropdown -->
+{#if scoresOpen}
+    <div class="scores-dropdown">
+        {#each sortedPlayers as player (player.id)}
+            <div
+                class="score-chip"
+                class:leader={player.score === leadScore && leadScore > 0}
+                class:is-me={player.id === currentPlayerId}
+            >
+                <span class="chip-name">{player.name}</span>
+                <span class="chip-score">{player.score}</span>
+            </div>
+        {/each}
+    </div>
+{/if}
 
 <style>
     .hud-bar {
@@ -95,18 +115,14 @@
     @media (max-width: 900px) {
         .hud-bar {
             grid-template-columns: 1fr 1fr;
-            row-gap: 8px;
+            row-gap: 4px;
         }
         .hud-turn {
+            position: relative;
+            left: auto;
+            transform: none;
             grid-column: 1 / -1;
-            order: 3;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .hud-bar {
-            padding: 6px 10px;
-            gap: 8px;
+            order: -1;
         }
     }
 
@@ -305,5 +321,107 @@
         font-size: 13px;
         color: var(--parch-light);
         white-space: nowrap;
+    }
+
+    /* ─── Mobile toggle & dropdown ─────────────── */
+    .scores-toggle {
+        display: none;
+    }
+
+    .scores-dropdown {
+        display: none;
+    }
+
+    @media (max-width: 600px) {
+        .hud-bar {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: center;
+            padding: 4px 8px;
+            gap: 4px;
+            position: relative;
+        }
+        .hud-turn {
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .turn-banner {
+            padding: 3px 10px;
+            min-height: 24px;
+        }
+        .turn-text {
+            font-size: 11px;
+        }
+        .hud-info {
+            flex-shrink: 0;
+        }
+        .hud-chip {
+            padding: 2px 6px;
+        }
+        .hud-label {
+            font-size: 8px;
+        }
+        .hud-value {
+            font-size: 13px;
+        }
+
+        /* Hide inline scores, show toggle */
+        .hud-scores {
+            display: none !important;
+        }
+        .scores-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: auto;
+            position: relative;
+            z-index: 1;
+            width: 32px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--parch-med);
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        /* Dropdown panel */
+        .scores-dropdown {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 8px;
+            background: linear-gradient(
+                180deg,
+                rgba(42, 26, 16, 0.98) 0%,
+                rgba(26, 14, 8, 0.95) 100%
+            );
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            animation: slide-down 0.2s var(--ease-out);
+            position: relative;
+            z-index: 200;
+        }
+
+        .scores-dropdown .score-chip {
+            padding: 3px 8px;
+            font-size: 11px;
+        }
+        .scores-dropdown .chip-score {
+            font-size: 12px;
+        }
+    }
+
+    @keyframes slide-down {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
     }
 </style>

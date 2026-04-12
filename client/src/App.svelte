@@ -15,9 +15,10 @@
     import SVGFilters from "./components/cards/SVGFilters.svelte";
 
     const path = window.location.pathname;
+    const isContentPage = ["/vs/skull-king", "/vs/wizard", "/vs/oh-hell", "/how-to-play", "/rules", "/strategy", "/faq", "/cards"].includes(path);
 </script>
 
-<div class="app-root">
+<div class="app-root" class:content-page={isContentPage}>
     {#if path === "/rules"}
         <Rules />
     {:else if path === "/how-to-play"}
@@ -52,5 +53,10 @@
         height: 100vh;
         overflow: hidden;
         position: relative;
+    }
+
+    .app-root.content-page {
+        height: auto;
+        overflow: visible;
     }
 </style>

@@ -3,11 +3,21 @@
 </script>
 
 <svelte:head>
-    <title>Last Round vs Skull King | #1 Free Online Alternative</title>
+    <title>Last Round vs Skull King | Best Free Online Alternative</title>
     <meta
         name="description"
-        content="Comparing Last Round to Skull King. Why Last Round is the best free online alternative to play with friends right in your browser."
+        content="Compare Last Round and Skull King side by side. Last Round is a free online Skull King alternative — no download, no account, play instantly in your browser with 2–6 players."
     />
+    <link rel="canonical" href="https://lastround.io/vs/skull-king" />
+    <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Can I play Skull King online for free?", "acceptedAnswer": { "@type": "Answer", "text": "The official Skull King app requires a purchase. Last Round is a free online alternative with the same trick-taking and bidding mechanics — playable instantly in any browser, no download required." } },
+            { "@type": "Question", "name": "Is Last Round the same as Skull King?", "acceptedAnswer": { "@type": "Answer", "text": "Last Round is an independent game inspired by trick-taking card games. It features its own card names, rules, and scoring — but if you love Skull King's bidding mechanics, you'll feel right at home." } },
+            { "@type": "Question", "name": "Does Last Round work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — Last Round is fully playable on mobile browsers. No app download required." } }
+        ]
+    })}</script>
 </svelte:head>
 
 <div class="vs-screen wood-bg">
@@ -107,6 +117,22 @@
                     across the globe without paying a toll.
                 </p>
             </div>
+        </section>
+
+        <section class="faq-section">
+            <h2 class="heading-ink">Frequently Asked Questions</h2>
+            <details class="faq-item">
+                <summary class="faq-question">Can I play Skull King online for free?</summary>
+                <p class="faq-answer">The official Skull King app requires a purchase. Last Round is a free online alternative with the same trick-taking and bidding mechanics — playable instantly in any browser, no download required.</p>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-question">Is Last Round the same as Skull King?</summary>
+                <p class="faq-answer">Last Round is an independent game inspired by trick-taking card games. It features its own card names, rules, and scoring — but if you love Skull King's bidding mechanics, you'll feel right at home.</p>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-question">Does Last Round work on mobile?</summary>
+                <p class="faq-answer">Yes — Last Round is fully playable on mobile browsers. No app download required.</p>
+            </details>
         </section>
 
         <div class="cta-section">
@@ -280,6 +306,57 @@
         font-size: 16px;
         line-height: 1.6;
         color: var(--ink-faded);
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        margin-bottom: 48px;
+    }
+
+    .faq-section h2 {
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 24px;
+        border-bottom: 1px solid rgba(139, 96, 32, 0.2);
+        padding-bottom: 16px;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid rgba(139, 96, 32, 0.15);
+        padding: 4px 0;
+    }
+
+    .faq-question {
+        font-family: var(--font-ui);
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+        cursor: pointer;
+        padding: 12px 0;
+        list-style: none;
+    }
+
+    .faq-question::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq-question::before {
+        content: '+ ';
+        color: var(--gold-dim);
+        font-weight: bold;
+    }
+
+    details[open] .faq-question::before {
+        content: '− ';
+    }
+
+    .faq-answer {
+        font-family: var(--font-ui);
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink-faded);
+        padding: 0 0 12px 16px;
+        margin: 0;
     }
 
     /* CTA Section */

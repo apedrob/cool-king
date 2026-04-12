@@ -3,11 +3,24 @@
 </script>
 
 <svelte:head>
-    <title>Last Round FAQ | Free Online Pirate Card Game</title>
+    <title>Last Round FAQ | Free Skull King Alternative Online</title>
     <meta
         name="description"
-        content="Frequently asked questions about Last Round. Learn how to play, how many players are supported, what makes it different from Skull King, and more."
+        content="Common questions about Last Round, the free online Skull King alternative. How to play, player count, how it differs from Skull King, scoring, and more."
     />
+    <link rel="canonical" href="https://lastround.io/faq" />
+    <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "What is Last Round?", "acceptedAnswer": { "@type": "Answer", "text": "Last Round is a free online multiplayer trick-taking card game with a pirate theme, and a Skull King alternative. Players bid on how many tricks they'll win, then play to hit their bid exactly. No download or account required." } },
+            { "@type": "Question", "name": "Is Last Round really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, 100% free forever. No ads, no microtransactions, no account required." } },
+            { "@type": "Question", "name": "Do I need to download anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. Last Round runs entirely in your web browser. Works on desktop, tablet, and mobile." } },
+            { "@type": "Question", "name": "How is Last Round different from Skull King?", "acceptedAnswer": { "@type": "Answer", "text": "Last Round is a free browser-based Skull King alternative with its own card names and mechanics. No physical cards or paid app needed — share a link and play instantly." } },
+            { "@type": "Question", "name": "How many players can play?", "acceptedAnswer": { "@type": "Answer", "text": "2 to 6 players. Works great at any player count; 3–5 is the sweet spot." } },
+            { "@type": "Question", "name": "Can I play on my phone?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Last Round is fully responsive and works on mobile browsers." } }
+        ]
+    })}</script>
 </svelte:head>
 
 <div class="faq-screen wood-bg">

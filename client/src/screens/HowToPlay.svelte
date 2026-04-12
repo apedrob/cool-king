@@ -4,11 +4,12 @@
 </script>
 
 <svelte:head>
-    <title>How to Play Last Round | Free Trick-Taking Card Game</title>
+    <title>How to Play Last Round | Free Online Skull King Alternative</title>
     <meta
         name="description"
-        content="Quick start guide for Last Round. Learn the basics of trick-taking, bidding strategy, and special card interactions in this online multiplayer game."
+        content="Learn how to play Last Round, the free browser Skull King alternative. Bidding, trick-taking, and special card rules — start playing in minutes."
     />
+    <link rel="canonical" href="https://lastround.io/how-to-play" />
 </svelte:head>
 
 <div class="htp-screen wood-bg">

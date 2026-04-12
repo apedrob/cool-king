@@ -3,11 +3,12 @@
 </script>
 
 <svelte:head>
-    <title>Last Round Strategy Guide | Tips to Win Every Round</title>
+    <title>Last Round Strategy Guide | Skull King Alternative Tips</title>
     <meta
         name="description"
-        content="Master Last Round with expert bidding strategies, special card tactics, and advanced tips. Learn when to play the Captain, how to use The Foreigner, and how to dominate every trick."
+        content="Master Last Round with expert bidding strategies, special card tactics, and advanced tips. Learn when to play the Captain, how to use The Foreigner, and how to dominate every trick — the free online Skull King alternative."
     />
+    <link rel="canonical" href="https://lastround.io/strategy" />
 </svelte:head>
 
 <div class="strategy-screen wood-bg">

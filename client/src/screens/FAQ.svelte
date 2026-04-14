@@ -1,15 +1,7 @@
 <script lang="ts">
     import { arrowLeftIcon } from "../lib/icons";
-</script>
 
-<svelte:head>
-    <title>Last Round FAQ | Free Skull King Alternative Online</title>
-    <meta
-        name="description"
-        content="Common questions about Last Round, the free online Skull King alternative. How to play, player count, how it differs from Skull King, scoring, and more."
-    />
-    <link rel="canonical" href="https://lastround.io/faq" />
-    <script type="application/ld+json">{JSON.stringify({
+    const jsonLd = JSON.stringify({
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
@@ -20,7 +12,17 @@
             { "@type": "Question", "name": "How many players can play?", "acceptedAnswer": { "@type": "Answer", "text": "2 to 6 players. Works great at any player count; 3–5 is the sweet spot." } },
             { "@type": "Question", "name": "Can I play on my phone?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Last Round is fully responsive and works on mobile browsers." } }
         ]
-    })}</script>
+    });
+</script>
+
+<svelte:head>
+    <title>Last Round FAQ | Free Skull King Alternative Online</title>
+    <meta
+        name="description"
+        content="Common questions about Last Round, the free online Skull King alternative. How to play, player count, how it differs from Skull King, scoring, and more."
+    />
+    <link rel="canonical" href="https://lastround.io/faq" />
+    {@html `<script type="application/ld+json">${jsonLd}</` + `script>`}
 </svelte:head>
 
 <div class="faq-screen wood-bg">

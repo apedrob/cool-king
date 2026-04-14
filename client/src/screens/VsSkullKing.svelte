@@ -1,5 +1,15 @@
 <script lang="ts">
     import { skullIcon } from "../lib/icons";
+
+    const jsonLd = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Can I play Skull King online for free?", "acceptedAnswer": { "@type": "Answer", "text": "The official Skull King app requires a purchase. Last Round is a free online alternative with the same trick-taking and bidding mechanics — playable instantly in any browser, no download required." } },
+            { "@type": "Question", "name": "Is Last Round the same as Skull King?", "acceptedAnswer": { "@type": "Answer", "text": "Last Round is an independent game inspired by trick-taking card games. It features its own card names, rules, and scoring — but if you love Skull King's bidding mechanics, you'll feel right at home." } },
+            { "@type": "Question", "name": "Does Last Round work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — Last Round is fully playable on mobile browsers. No app download required." } }
+        ]
+    });
 </script>
 
 <svelte:head>
@@ -9,15 +19,7 @@
         content="Compare Last Round and Skull King side by side. Last Round is a free online Skull King alternative — no download, no account, play instantly in your browser with 2–6 players."
     />
     <link rel="canonical" href="https://lastround.io/vs/skull-king" />
-    <script type="application/ld+json">{JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            { "@type": "Question", "name": "Can I play Skull King online for free?", "acceptedAnswer": { "@type": "Answer", "text": "The official Skull King app requires a purchase. Last Round is a free online alternative with the same trick-taking and bidding mechanics — playable instantly in any browser, no download required." } },
-            { "@type": "Question", "name": "Is Last Round the same as Skull King?", "acceptedAnswer": { "@type": "Answer", "text": "Last Round is an independent game inspired by trick-taking card games. It features its own card names, rules, and scoring — but if you love Skull King's bidding mechanics, you'll feel right at home." } },
-            { "@type": "Question", "name": "Does Last Round work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — Last Round is fully playable on mobile browsers. No app download required." } }
-        ]
-    })}</script>
+    {@html `<script type="application/ld+json">${jsonLd}</` + `script>`}
 </svelte:head>
 
 <div class="vs-screen wood-bg">
